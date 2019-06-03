@@ -139,11 +139,17 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 				<td colspan="1" class="negrita">Nombre del vendedor</td>
 				<td colspan="7"><span style="font-size:11pt;">
 					<?php
+					$tipo = '';
 					if (!$det) {
 					} else {
 						foreach ($det as $key) {
 						}
-						echo "CONSOLIDADO TOTAL  ".$key["RubroD"]."";
+						if($this->uri->segment(5) == 79){
+							$tipo = "Venta Local";
+						}else{
+							$tipo = $key["RubroD"];
+						}
+						echo "CONSOLIDADO TOTAL  ".$tipo."";
 					}
 					?>
 				</span></td>

@@ -72,8 +72,16 @@
 											echo "
 												<option value=".$item["IdRuta"].">".$item["Ruta"]."</option>
 											";
+											if(!$rutas){
+											}else{
+												foreach ($rutas as $ruta) {
+													echo "
+														<option value=".$ruta["IdRuta"].">".$ruta["Ruta"]."</option>
+													";
+												}
 									  }
 									}
+								}
 
 								/*	if (!$rutas) {
 									} else {

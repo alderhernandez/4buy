@@ -326,13 +326,13 @@ $("#btnAgregar").click(function(){
 
 $("body").on("click", "tr", function(){
 	$(this).toggleClass("danger");
-	if($(this).hasClass("danger")){
+	/*if($(this).hasClass("danger")){
 		$("#btnSaveRem").hide();
 		$("#buttonsRem").show()
 	}else{
 		$("#btnSaveRem").show();
 		$("#buttonsRem").hide()
-	}
+	}*/
 });
 
 $("#btnDelete").click(function() {
@@ -469,7 +469,13 @@ $("#ddlRutas").change(function () {
 	let nombre = '';
 	if ($("#ddlRutas option:selected").val() == ""){
 		$("#vendedor").val(nombre);
+		$("#detalle").html("Detalle");
 	} else{
+		if($("#ddlRutas option:selected").val() == 79){
+			$("#detalle").html("Venta Local");
+		}else{
+			$("#detalle").html("Detalle");
+		}
 		$.ajax({
 			url: "GetVendedorAjax/" + $("#ddlRutas option:selected").val(),
 			type: "POST",
