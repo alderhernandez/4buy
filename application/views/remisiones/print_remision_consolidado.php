@@ -163,7 +163,15 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 						foreach ($det as $key) {
 						}
 						if($this->uri->segment(5) != "NULL"){
-							echo "CONSOLIDADO TOTAL RUTA ".$this->uri->segment(5). " (".$key["TipoD"].")";
+							$rout = '';
+							if($this->uri->segment(5) == 78){
+								$rout = '30';
+							}else if($this->uri->segment(5) == 79){
+								$rout = '31';
+							}else{
+								$rout = $this->uri->segment(5);
+							}
+							echo "CONSOLIDADO TOTAL RUTA ".$rout. " (".$key["TipoD"].")";
 						}else{
 							echo "CONSOLIDADO TOTAL  (".$key["TipoD"].")";
 						}
