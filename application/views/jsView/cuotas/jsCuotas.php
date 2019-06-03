@@ -8,6 +8,95 @@
 ?>
 <script type="text/javascript">
 	$(document).ready(function () {
+
+	let url = window.location.pathname;
+	let params = url.split("ExportarCuota");
+
+	let loc = window.location;
+	let pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 4);
+    let ruta1 = loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));    
+    url = ruta1+"../remisionOrdenSCliente"+params[1];
+    url = ruta1.replace("ExportarCuota","grafica");
+
+	$.ajax({
+        url: url,
+        type: 'get',
+        dataType: 'json',
+        data: '',
+        success: function (msg) {
+		paramNombres = [];
+		paramDatos = [];
+		bgColor = [];
+		bgBorder = [];
+		$.each(msg, function(i,item){ //se recorren los datos y se generan colores random
+			//alert(item["Nombre"]);
+				var r = Math.random() * 255;
+				r = Math.round(r);
+
+				var g = Math.random() * 255;
+				g = Math.round(g);
+
+				var b = Math.random() * 255;
+				b = Math.round(b);
+
+			paramNombres.push(item["Nombre"]);
+			paramDatos.push(item["LIBRAS_VENDIDAS"]);
+			bgColor.push('rgba('+r+','+g+','+b+', 0.8)');
+			bgBorder.push('rgba('+r+','+g+','+b+', 1)');
+		});
+
+		//CONSTRUCCION DEL GRAFICO
+		var ctx = $("#myChart");
+			var myChart = new Chart(ctx, {
+			    type: 'bar',
+			    data: {
+			        labels: paramNombres,
+			        datasets: [{
+			            label: 'Libras',
+			            data: paramDatos,
+			            backgroundColor: bgColor,
+			            borderColor: bgBorder,
+			            borderWidth: 1
+			        }]
+			    },
+			    options: {
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero:true
+			                }
+			            }]
+			        }
+			    }
+			});
+			var ctx = $("#myChart2");
+			var myChart = new Chart(ctx, {
+			    type: 'pie',
+			    data: {
+			        labels: paramNombres,			        
+			        datasets: [{
+			            label: paramNombres,
+			            data: paramDatos,
+			            backgroundColor: bgColor,
+			            borderColor: bgBorder,
+			            borderWidth: 1
+			        }]
+			    },
+			    options: {
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero:true
+			                }
+			            }]
+			        }
+			    }
+			});
+
+        }
+    });
+
+
 		$("#datatable").DataTable({
 			"order": [
 			[1, "asc"]

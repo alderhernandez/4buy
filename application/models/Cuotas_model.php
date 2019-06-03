@@ -236,6 +236,51 @@ class Cuotas_model extends CI_Model
 		}
 		return 0;
 	}
+	public function ExportarReporteCuotas2($fechaInicio, $fechaFin, $IdRuta, $mes){
+		$array = array();
+		$i = 0;
+		$queryRuta = '';
+		if($IdRuta && $mes){
+			$queryRuta = "WHERE Descripcion = '".$IdRuta."' and MES = '".$mes."' ";
+		}
+		if($IdRuta == 'null' && $mes){
+			$queryRuta = "WHERE Descripcion not in('null') and MES = '".$mes."' ";
+		}
+		$query = $this->db->query("
+		    WITH TABLA AS
+			(
+			SELECT t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL, 
+			SUM(t0.LibrasVendidas) LIBRAS_VENDIDAS,T3.DIAS_EFECTIVOS,
+			CAST('01-'+CAST(T3.MES AS CHAR)+'-'+CAST(T3.ANIO AS CHAR) AS DATE) AS PRIMER_DIA,
+			datediff(dd, '".$fechaInicio."', '".$fechaFin."') - (datediff(wk, '".$fechaInicio."', '".$fechaFin."')) 
+			-((DATEDIFF(day,'".$fechaInicio."', '".$fechaFin."')-DATEPART(dw,'".$fechaFin."')+7)/7)*0.5 DIAS_TRANSCURRIDOS,
+			T1.IDCatRuta,T4.Descripcion,
+			t2.liquidado as Liquidado,
+			t3.MES
+			FROM [dbo].[Liquidacion] t0
+			
+			inner join [dbo].[Usuarios] t1 on t0.IdRuta=t1.IdRuta
+			inner join periodos t2 on t2.IdPeriodo= t0.IdPeriodo
+			inner join Cuotas t3 on t1.IdRuta = t3.idruta
+			inner join CategoriasRutas t4 on T1.IDCatRuta = t4.ID
+			WHERE t2.liquidado='Y' AND  
+			CAST (t2.FechaInicio AS date)>= '".$fechaInicio."' and 
+			CAST(t2.FechaInicio AS date)<= '".$fechaFin."'  and t1.ESTADO ='1'
+			GROUP BY  t1.IdRuta, t1.Nombre, t1.Apellidos, t3.CUOTAMENSUAL,T3.DIAS_EFECTIVOS,T3.MES,T3.ANIO,t2.liquidado,T1.IDCatRuta, T4.Descripcion,t3.MES
+			) 
+			SELECT IdRuta,Descripcion,Nombre,Apellidos,CUOTAMENSUAL,cast (LIBRAS_VENDIDAS as decimal (18,2)) as LIBRAS_VENDIDAS,
+			cast((CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal(18,2)) AS CUOTA_A_LLEVAR,
+			cast(LIBRAS_VENDIDAS-(CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS as decimal (18,2)) AS GAP_LIBRAS,
+			cast (CUOTAMENSUAL-LIBRAS_VENDIDAS as decimal (18,2)) AS FALTA_VENDER,
+			cast(((LIBRAS_VENDIDAS/CUOTAMENSUAL)*100) as decimal (18,2))AS AVANCE_VENTAS,
+			cast ((LIBRAS_VENDIDAS/((CUOTAMENSUAL/DIAS_EFECTIVOS)*DIAS_TRANSCURRIDOS)*100)as decimal (18,2)) AS CUMPLIMIENTO,
+			cast((LIBRAS_VENDIDAS/DIAS_TRANSCURRIDOS) as decimal (18,2)) AS PROMEDIO_DIARIO,
+			DIAS_EFECTIVOS,PRIMER_DIA,DIAS_TRANSCURRIDOS,Liquidado,MES FROM TABLA
+			".$queryRuta."
+			 ORDER BY IdRuta");
+
+		echo json_encode($query->result_array());		
+	}
 }
 
 /* End of file .php */
