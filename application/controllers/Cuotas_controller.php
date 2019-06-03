@@ -88,6 +88,21 @@ class Cuotas_controller extends CI_Controller {
 		$this->Cuotas_model->ReporteCuotas($fechaInicio, $fechaFin, $IdRuta,$mes);
 		//echo $this->db->last_query();
 	}
+	
+	function grafica($fechaInicio, $fechaFin, $IdRuta,$mes)
+	{
+
+		$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1037");
+		if($permiso){
+
+			$data["cuotas"] = $this->Cuotas_model->ExportarReporteCuotas2($fechaInicio, $fechaFin, str_replace("%20"," ",$IdRuta),$mes);
+			//echo json_encode($data["cuotas"]);
+			$data["rubros"] = $this->Cuotas_model->getRubros($IdRuta);
+			//echo json_encode($data["rubros"]);
+		}else{
+			echo 0;
+		}
+	}
 
 }
 

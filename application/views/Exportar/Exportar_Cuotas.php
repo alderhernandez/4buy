@@ -18,6 +18,13 @@
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme.css" />
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/skins/default.css" />
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/theme-custom.css">
+	<script src="<?php echo base_url()?>assets/js/jquery.js"></script>
+	<!--chart-->	
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/chart/Chart.min.css">>
+	<script src="<?php echo base_url()?>assets/js/chart/Chart.js"></script>
+	<script src="<?php echo base_url()?>assets/js/chart/Chart.bundle.js"></script>
+	<script src="<?php echo base_url()?>assets/js/chart/utils.js"></script>
+
 	<style>
 		body{
 			font-size: 11px;
@@ -25,7 +32,7 @@
 		.bold{font-weight: bolder}
 	</style>
 	<script type="text/javascript">
-		window.print();
+		//window.print();
 	</script>
 </head>
 <body>
@@ -264,6 +271,14 @@
 						</div>
 					</div>
 				</div>-->
+				<div class="row">
+				<div class="col-sm-6">
+					<canvas id="myChart" width="100%" height="40px"></canvas>	
+				</div>
+				<div class="col-sm-6">
+					<canvas id="myChart2" width="100%" height="40px"></canvas>	
+				</div>				
+			</div>
 		</div>
 
 
