@@ -40,7 +40,7 @@
 
 
 		$("#tblDetFactLiq").DataTable({
-			"scrollX": true,
+			//"scrollX": true,
 			"searching": false,
 			"info": false,
 			"sort": true,
@@ -225,6 +225,7 @@
 					,data[8],data[9],data[10],data[11],data[12],data[13],data[14],data[15],data[16],
 					data[17],data[18],data[19],merma],index );
 					bandera = false;
+					
 					return false; 
 				}
 			}
