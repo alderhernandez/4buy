@@ -30,9 +30,9 @@ $db['default'] = array(
 
 $db['dbintegracion'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.1.203',//'192.168.1.5',
-	'username' => 'sa', //'ICGAdmin',
-	'password' => '123',//'masterkey',
+	'hostname' => '192.168.1.5',//'192.168.1.5',
+	'username' => 'ICGAdmin', //'ICGAdmin',
+	'password' => 'masterkey',//'masterkey',
 	'database' => 'SCGIntegracionDELMOR',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',
