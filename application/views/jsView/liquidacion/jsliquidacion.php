@@ -203,7 +203,7 @@
 		let table2 = $("#Unidades").DataTable();
 		let bandera = true;
 		let band = true;
-
+		$("#txtMerma").val("");
 		table.rows().eq(0).each(function(index){
 			let row = table.row(index);
 			let data = row.data();
