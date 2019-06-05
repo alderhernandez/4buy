@@ -171,7 +171,7 @@
 				<div class="tab-content" style="overflow-x: scroll;">
 					<div id="general" class="tab-pane active">
 						<div class="row" style="width: 150%">
-							<table style="width:1020%" class="table table-condensed table-bordered table-striped" id="tblDetFactLiq">
+							<table class="table table-condensed table-bordered table-striped" id="tblDetFactLiq">
 								<thead>
 								<tr class="text-dark">
 									<th>Codigo</th>

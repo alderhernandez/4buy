@@ -196,7 +196,7 @@
 	});
 
 	$("#btnAddMerma").click(function(){
-		let codigo = $("#thisid").val(), 
+		let codigo = $("#thisid").val(),
 		merma = $("#txtMerma").val(),
 		i = 0;
 		let table = $("#tblDetFactLiq").DataTable();
@@ -211,7 +211,7 @@
 				return false;
 			}
 			if( data[0] == codigo){
-				let num1 = (Number(data[4]))*0.05;
+				let num1 = (Number(data[4])) * 0.05;
 				if(Number(merma) > Number(num1)){
 					swal({
 						html: "La cantidad de merma sobrepasa la cantidad permitida." 
@@ -224,8 +224,11 @@
 					oTable.fnUpdate( [data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]
 					,data[8],data[9],data[10],data[11],data[12],data[13],data[14],data[15],data[16],
 					data[17],data[18],data[19],merma],index );
-					bandera = false;
-					
+					bandera = false;					
+					//$("#thisid").select2().trigger("change");
+					$("#select2-drop-mask").select2("val", []).trigger("change");
+
+					//$exampleMulti.val(["CA", "AL"]).trigger("change");
 					return false; 
 				}
 			}

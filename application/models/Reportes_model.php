@@ -219,7 +219,7 @@ class Reportes_model extends CI_Model
 									- 
 									CAST(MIN(RIGHT(IDFACTURA,LEN(IDFACTURA)-CHARINDEX('-', IDFACTURA)))AS INT)+1 NUMERO
 									FROM Facturas 
-									WHERE FECHA BETWEEN '".$fecha1."' AND '".$fecha2."' 
+									WHERE CAST(FECHA AS DATE) >= '".$fecha1."' AND CAST(FECHA AS DATE) <= '".$fecha2."' 
 									GROUP BY LEFT(IDFACTURA,CHARINDEX('-', IDFACTURA)-1)
 									ORDER BY LEFT(IDFACTURA,CHARINDEX('-', IDFACTURA)-1) ASC");
 		if ($query->num_rows()>0) {
