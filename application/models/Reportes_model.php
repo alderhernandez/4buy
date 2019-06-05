@@ -247,7 +247,7 @@ class Reportes_model extends CI_Model
 									t0.CODVENDEDOR,t1.Nombre,t1.Apellidos
 									FROM Facturas t0 
 									inner join Usuarios t1 on t1.IdRuta = t0.CODVENDEDOR
-									WHERE FECHA BETWEEN '".$fecha1."' AND '".$fecha2."' 
+									WHERE CAST(FECHA AS DATE) >= '".$fecha1."' AND CAST(FECHA AS DATE) <= '".$fecha2."' 
 									GROUP BY LEFT(t0.IDFACTURA,CHARINDEX('-', t0.IDFACTURA)-1),
 									RIGHT(t0.IDFACTURA,LEN(t0.IDFACTURA)-CHARINDEX('-', t0.IDFACTURA)),t0.CODVENDEDOR,t1.Nombre,t1.Apellidos
 									ORDER BY LEFT(t0.IDFACTURA,CHARINDEX('-', t0.IDFACTURA)-1) ASC");

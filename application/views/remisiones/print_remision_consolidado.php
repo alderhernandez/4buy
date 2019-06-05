@@ -139,17 +139,11 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 				<td colspan="1" class="negrita">Nombre del vendedor</td>
 				<td colspan="7"><span style="font-size:11pt;">
 					<?php
-					$tipo = '';
 					if (!$det) {
 					} else {
 						foreach ($det as $key) {
 						}
-						if($this->uri->segment(5) == 79){
-							$tipo = "Venta Local";
-						}else{
-							$tipo = $key["RubroD"];
-						}
-						echo "CONSOLIDADO TOTAL  ".$tipo."";
+						echo "CONSOLIDADO TOTAL  ".$key["RubroD"]."";
 					}
 					?>
 				</span></td>
@@ -163,15 +157,7 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 						foreach ($det as $key) {
 						}
 						if($this->uri->segment(5) != "NULL"){
-							$rout = '';
-							if($this->uri->segment(5) == 78){
-								$rout = '30';
-							}else if($this->uri->segment(5) == 79){
-								$rout = '31';
-							}else{
-								$rout = $this->uri->segment(5);
-							}
-							echo "CONSOLIDADO TOTAL RUTA ".$rout. " (".$key["TipoD"].")";
+							echo "CONSOLIDADO TOTAL RUTA ".$this->uri->segment(5). " (".$key["TipoD"].")";
 						}else{
 							echo "CONSOLIDADO TOTAL  (".$key["TipoD"].")";
 						}
