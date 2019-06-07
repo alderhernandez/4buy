@@ -444,6 +444,34 @@ class Hana_model extends CI_Model
             echo @odbc_error($conn);
     }
 
+    public function getProductosMermas($search){
+    	$qfilter = '';
+        if(isset($search)){
+        	$qfilter = 'AND "ItemName" LIKE '."'%".$search."%'".'
+                        OR "ItemCode" LIKE '."'%".$search."%'".'
+                        AND "Merma" = '."'Y'".'';
+		}
+        $conn = $this->OPen_database_odbcSAp();
+                    $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1" 
+                        FROM '.$this->BD.'."VIEW_BODEGAS_EXISTENCIAS"
+                        WHERE "Merma" = '."'Y'".' AND "WhsCode" = '."'01'".'
+                        '.$qfilter.'
+                        ORDER BY "ItemCode" ASC
+                        LIMIT 10';
+
+            $resultado = @odbc_exec($conn,$query);
+            $json = array();
+            $i = 0;
+            while ($fila = @odbc_fetch_array($resultado)) {
+                $json[$i]["ItemCode"] = $fila["ItemCode"];
+                $json[$i]["ItemName"] = utf8_encode($fila["ItemName"]);
+                //$json[$i]["SWeight1"] = utf8_encode($fila["SWeight1"]);
+                $i++;
+            }
+            echo json_encode($json);
+            echo @odbc_error($conn);
+    }
+
 	public function getStockProdAjax($itemcode){
 		$conn = $this->OPen_database_odbcSAp();
 			$query = 'select SUM("OnHand") "OnHand" ,SUM("Available QTY") "Available QTY","SWeight1"

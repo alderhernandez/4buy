@@ -152,12 +152,20 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 				<td colspan="1" class="negrita" style="width:200px;">Ruta/Zona</td>
 				<td colspan="7"><span style="font-size:11pt;">
 					<?php
+					$ruta = '';
 					if (!$det) {
 					} else {
 						foreach ($det as $key) {
 						}
 						if($this->uri->segment(5) != "NULL"){
-							echo "CONSOLIDADO TOTAL RUTA ".$this->uri->segment(5). " (".$key["TipoD"].")";
+							if($this->uri->segment(5) == 78){
+								$ruta = '30';
+							}elseif ($this->uri->segment(5) == 79) {
+								$ruta = '31';
+							}else{
+								$ruta = $this->uri->segment(5);
+							}
+							echo "CONSOLIDADO TOTAL RUTA ".$ruta. " (".$key["TipoD"].")";
 						}else{
 							echo "CONSOLIDADO TOTAL  (".$key["TipoD"].")";
 						}

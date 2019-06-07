@@ -68,6 +68,7 @@ $route["inventarioRutasSinStock"] = "Remisiones_controller/inventarioRutasSinSto
 
 $route["Remisiones"] = "Remisiones_controller/remisiones";
 $route["ProductosList"] = "Remisiones_controller/getProductosRutas";
+$route["ProductosListMerma"] = "Remisiones_controller/getProductosMermas";
 
 $route["SaveRemision"] = "Remisiones_controller/guardarRemision";
 $route["GetVendedorAjax/(:any)"] = "Remisiones_controller/getVendedorAjax/$1";   /*Cargar vendedor en campo de texto al seleccionar una ruta*/

@@ -13,7 +13,7 @@
 			placeholder: '--- Seleccione un Producto ---',
 			allowClear: true,
 			ajax: {
-				url: '<?php echo base_url("index.php/ProductosList")?>',
+				url: '<?php echo base_url("index.php/ProductosListMerma")?>',
 				dataType: 'json',
 				type: "POST",
 				quietMillis: 100,

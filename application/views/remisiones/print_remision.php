@@ -169,10 +169,18 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 			<tr>
 				<td colspan="1" class="negrita" style="width:200px;">Ruta/Zona</td>
 				<td colspan="7"><span style="font-size:11pt;"><?php
+				        $ruta = '';
 						if (!$enc) {
 						} else {
 							foreach ($enc as $key) {
-								echo "RUTA ".$key["IdRuta"]."";
+								if($key["IdRuta"] == 78){
+									$ruta = '30';
+								}elseif($key["IdRuta"] == 79){
+									$ruta = '31';
+								}else{
+									$ruta = $key["IdRuta"];
+								}
+								echo "RUTA ".$ruta."";
 							}
 						}
 						?></span></td>
