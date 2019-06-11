@@ -447,9 +447,8 @@ class Hana_model extends CI_Model
     public function getProductosMermas($search){
     	$qfilter = '';
         if(isset($search)){
-        	$qfilter = 'AND "ItemName" LIKE '."'%".$search."%'".'
-                        OR "ItemCode" LIKE '."'%".$search."%'".'
-                        AND "Merma" = '."'Y'".'';
+        	$qfilter = 'AND ("ItemName" LIKE '."'%".$search."%'".'
+                        OR "ItemCode" LIKE '."'%".$search."%'".')';
 		}
         $conn = $this->OPen_database_odbcSAp();
                     $query = 'SELECT DISTINCT "ItemCode","ItemName","SWeight1" 
