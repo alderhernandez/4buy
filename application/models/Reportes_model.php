@@ -403,112 +403,52 @@ class Reportes_model extends CI_Model
 	public function reporteMermas($rango1,$rango2,$bandera){
 		$json = array();
 		$i = 0;
-		$query = $this->db->query("select codigo,Descripcion,SUM(Total) Total, NombreMes,
-		ISNULL(SUM([1]),0.000) '1',ISNULL(SUM([2]),0.0000) '2',ISNULL(SUM([3]),0.0000) '3',
-		ISNULL(SUM([4]),0.0000) '4',ISNULL(SUM([5]),0.0000) '5',ISNULL(SUM([6]),0.0000) '6',
-		ISNULL(SUM([7]),0.0000) '7',ISNULL(SUM([8]),0.0000) '8',ISNULL(SUM([9]),0.0000) '9',
-		ISNULL(SUM([10]) ,0.0000) '10',ISNULL(SUM([11]) ,0.0000) '11',ISNULL(SUM([12]) ,0.0000) '12',
-		ISNULL(SUM([13]) ,0.0000) '13',ISNULL(SUM([14]) ,0.0000) '14',ISNULL(SUM([15]) ,0.0000) '15',
-		ISNULL(SUM([16]) ,0.0000) '16',ISNULL(SUM([17]) ,0.0000) '17',ISNULL(SUM([18]) ,0.0000) '18',
-		ISNULL(SUM([19]) ,0.0000) '19',ISNULL(SUM([20]) ,0.0000) '20',ISNULL(SUM([21]) ,0.0000) '21',
-		ISNULL(SUM([22]) ,0.0000) '22',ISNULL(SUM([23]) ,0.0000) '23',ISNULL(SUM([24]) ,0.0000) '24',
-		ISNULL(SUM([25]) ,0.0000) '25',ISNULL(SUM([26]) ,0.0000) '26',ISNULL(SUM([27]) ,0.0000) '27',
-		ISNULL(SUM([28]) ,0.0000) '28',ISNULL(SUM([29]) ,0.0000) '29',ISNULL(SUM([30]) ,0.0000) '30',
-		ISNULL(SUM([31]) ,0.0000) '31'
-		from 
-		(select Codigo,Descripcion,NombreMes,SUM(TotalMerma) Total,
-		[1],[2],[3],[4],[5],[6],[7],
-		[8],[9],[10],[11],[12],[13],
-		[14],[15],[16],[17],[18],[19],
-		[20],[21],[22],[23],[24],[25],
-		[26],[27],[28],[29],[30],[31]
-		from 
-		(select t1.IdRuta,t2.IdPeriodo,CAST(t1.FechaFinal as date) FechaFinal,
-		MONTH (CAST(t1.FechaFinal as date)) Mes,
-		CASE MONTH (CAST(t1.FechaFinal as date))
-		WHEN 1 THEN 'Enero'
-		WHEN 2 THEN 'Febrero'
-		WHEN 3 THEN 'Marzo'
-		WHEN 4 THEN 'Abril'
-		WHEN 5 THEN 'Mayo'
-		WHEN 6 THEN 'Junio'
-		WHEN 7 THEN 'Julio'
-		WHEN 8 THEN 'Agosto'
-		WHEN 9 THEN 'Septiembre'
-		WHEN 10 THEN 'Octubre'
-		WHEN 11 THEN 'Noviembre'
-		WHEN 12 THEN 'Diciembre'
-		END AS NombreMes,
-		DAY(CAST(t1.FechaFinal as date)) Dia,
-		t3.Codigo,
-		t3.Descripcion,
-		ISNULL(t3.Merma,0) Merma,
-		ISNULL(SUM(t3.Merma),0) TotalMerma
-		from Periodos t1
-		right join Liquidacion t2 on t2.IdPeriodo = t1.IdPeriodo
-		inner join Liquidacion_Detalle t3 on t2.IdLiquidacion = t3.IdLiquidacion
-		where CAST(t1.FechaFinal as date) >= '".$rango1."' and CAST(t1.FechaFinal as date) <= '".$rango2."'
-		group by CAST(t1.FechaFinal as date),t1.IdRuta,t2.IdPeriodo,t3.Codigo,
-		t3.Descripcion,t3.Merma
-		) as tabla
-		PIVOT
-		(
-			SUM(Merma)
-			FOR [Dia] IN ([1],[2],[3],[4],[5],[6],[7],
-						  [8],[9],[10],[11],[12],[13],
-						  [14],[15],[16],[17],[18],[19],
-						  [20],[21],[22],[23],[24],[25],
-						  [26],[27],[28],[29],[30],[31]
-						  )
-		) as pvt
-		group by Codigo,Descripcion,NombreMes,
-		[1],[2],[3],[4],[5],[6],[7],
-		[8],[9],[10],[11],[12],[13],
-		[14],[15],[16],[17],[18],[19],
-		[20],[21],[22],[23],[24],[25],
-		[26],[27],[28],[29],[30],[31],
-		IdRuta) as tabla2
-		group by Codigo,Descripcion,NombreMes
-		order by Codigo
-		
-		");
+		$query = $this->db->query("SP_Mermas '".$rango1."','".$rango2."'");
+		$encabezado = $this->encabezadoMerma($rango1,$rango2,FALSE);
 		if ($query->num_rows() > 0) {
 			foreach ($query->result_array() as $key) {
-				$json["data"][$i]["codigo"] = $key["codigo"];
-				$json["data"][$i]["Descripcion"] = $key["Descripcion"];
-				$json["data"][$i]["Total"] = number_format($key["Total"],2);
-				$json["data"][$i]["NombreMes"] = $key["NombreMes"];
-				$json["data"][$i]["1"] = number_format($key["1"],2);
-				$json["data"][$i]["2"] = number_format($key["2"],2);
-				$json["data"][$i]["3"] = number_format($key["3"],2);
-				$json["data"][$i]["4"] = number_format($key["4"],2);
-				$json["data"][$i]["5"] = number_format($key["5"],2);
-				$json["data"][$i]["6"] = number_format($key["6"],2);
-				$json["data"][$i]["7"] = number_format($key["7"],2);
-				$json["data"][$i]["8"] = number_format($key["8"],2);
-				$json["data"][$i]["9"] = number_format($key["9"],2);
-				$json["data"][$i]["10"] = number_format($key["10"],2);
-				$json["data"][$i]["11"] = number_format($key["11"],2);
-				$json["data"][$i]["12"] = number_format($key["12"],2);
-				$json["data"][$i]["13"] = number_format($key["13"],2);
-				$json["data"][$i]["14"] = number_format($key["14"],2);
-				$json["data"][$i]["15"] = number_format($key["15"],2);
-				$json["data"][$i]["16"] = number_format($key["16"],2);
-				$json["data"][$i]["17"] = number_format($key["17"],2);
-				$json["data"][$i]["18"] = number_format($key["18"],2);
-				$json["data"][$i]["19"] = number_format($key["19"],2);
-				$json["data"][$i]["20"] = number_format($key["20"],2);
-				$json["data"][$i]["21"] = number_format($key["21"],2);
-				$json["data"][$i]["22"] = number_format($key["22"],2);
-				$json["data"][$i]["23"] = number_format($key["23"],2);
-				$json["data"][$i]["24"] = number_format($key["24"],2);
-				$json["data"][$i]["25"] = number_format($key["25"],2);
-				$json["data"][$i]["26"] = number_format($key["26"],2);
-				$json["data"][$i]["27"] = number_format($key["27"],2);
-				$json["data"][$i]["28"] = number_format($key["28"],2);
-				$json["data"][$i]["29"] = number_format($key["29"],2);
-				$json["data"][$i]["30"] = number_format($key["30"],2);
-				$json["data"][$i]["31"] = number_format($key["31"],2);
+				$json[$i]["codigo"] = $key["Codigo"];
+				$json[$i]["Descripcion"] = $key["Descripcion"];
+				$json[$i]["Total"] = number_format($key["Total"],2);
+				$json[$i]["NombreMes"] = $key["NombreMes"];
+				foreach ($encabezado as $key1) {
+					for($var = 1; $var <= count($key1); $var++){
+						$json[$i]["DIA".$key1["Dias"].""] = number_format($key["DIA".$key1["Dias"].""],2);
+					}
+				}
+				$i++;
+			}
+			if($bandera){
+				echo json_encode($json);	
+				return;
+			}
+			return $query->result_array();
+		}
+		return 0;
+	}
+
+	public function encabezadoMerma($rango1,$rango2,$bandera){
+		$json = array();
+		$i = 0;
+		$query = $this->db->query("DECLARE @FechaDesde date = '".$rango1."', @FechaHasta date = '".$rango2."';
+		WITH DateSequence(Fecha) AS
+		(   SELECT @FechaDesde as Fecha
+			UNION ALL 
+			SELECT DATEADD(DAY, 1, Fecha)
+			FROM DateSequence
+			WHERE Fecha < @FechaHasta
+		)
+	
+		--select final para obtener la secuencia
+		SELECT DATEPART(DAY,Fecha) as Dias
+		FROM DateSequence where DATEPART(dw,Fecha) <> 1 
+		OPTION (MAXRECURSION 3000)
+		");
+		if($query->num_rows()>0){
+			foreach ($query->result_array() as $key) {
+				for($var = 1; $var <= count($key); $var ++){
+					$json[$i]["Dias"] = $key["Dias"];
+				}
 				$i++;
 			}
 			if($bandera){

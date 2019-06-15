@@ -84,36 +84,45 @@
 							<th class="text-center text-bold">Codigo</th>
 				            <th width="71" class="text-center text-bold">Descripcion</th>
                             <th width="46" class="text-center text-bold">Total</th>
-                            <?php 
-                                for ($i=1; $i <=31 ; $i++) { 
-                                   echo '
-                                           <th>'.$i.'</th>
-                                      ';
-                                }
+							<?php 
+                               if(!$enc){
+								}else{
+									foreach ($enc as $key) {
+										for($i = 1; $i <= count($key); $i++){
+											echo "<th>".$key["Dias"]."</th>";
+										}
+									}
+								}
                             ?>
 						</tr>	
 					</thead>
 				<tbody>
 				<?php
+				$array = array();
 				if(!$mermas){
 				}else {							
-						foreach ($mermas as $key) {								
+						foreach ($mermas as $key) {		
 							if($key["Total"] >= 0){
 								echo '
 									<tr>
-                                        <td class="text-center">'.$key["codigo"].'</td>
+                                        <td class="text-center">'.$key["Codigo"].'</td>
                                         <td style="font-size:8px;" class="text-center" wid>'.$key["Descripcion"].'</td>
-                                        <td class="text-center">'.$key["Total"].'</td>
-                                        ';
-                                        for ($i=1; $i <= 31 ; $i++) { 
-                                            echo '
-                                              <td class="text-center">'.$key["".$i.""].'</td>
-                                            ';
-                                        }
-								echo '</tr>';		
-							}				
+										<td class="text-center">'.number_format($key["Total"],2).'</td>';
+										if(!$enc){
+										}else{
+											foreach ($enc as $key1) {
+												for($i = 1; $i <= count($key1); $i++){
+													if($key["DIA".$key1["Dias"].""] != NULL){
+														echo "<td>".number_format($key["DIA".$key1["Dias"].""],2)."</td>";
+													}else{
+														echo "<td>0.00</td>";
+													}
+												}
+											}
+										}
+							 echo' </tr>';		
+						}				
 					}
-
 				}
 				?>
 				</tbody></table>

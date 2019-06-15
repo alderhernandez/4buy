@@ -240,9 +240,16 @@ class Reportes_controller extends CI_Controller {
 			$this->Reportes_model->reporteMermas($rango1,$rango2,TRUE);
 		}
 
+		public function encabezadoMerma(){
+			$rango1 = $this->input->get_post("rango1");
+			$rango2 = $this->input->get_post("rango2");
+			$this->Reportes_model->encabezadoMerma($rango1,$rango2,TRUE);
+		}
+
 		public function printReporteMermas($rango1,$rango2)
 		{
-			$data["mermas"] = $this->Reportes_model->reporteMermas($rango1,$rango2,false);			
+			$data["mermas"] = $this->Reportes_model->reporteMermas($rango1,$rango2,false);	
+			$data["enc"] = $this->Reportes_model->encabezadoMerma($rango1,$rango2,false);			
 			$this->load->view('Exportar/Exportar_Mermas',$data);	
 		}
 

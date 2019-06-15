@@ -189,7 +189,7 @@ setlocale(LC_ALL,'Spanish_Nicaragua');
 				if (!$enc) {
 						}else {
 							foreach ($enc as $key) {
-								if($key["Rubro"] == 2 || $key["Rubro"] == 3){
+								if($key["Referencia"] != ""){ //$key["Rubro"] == 2 || $key["Rubro"] == 3
 									echo '
 										<tr>
 											<td colspan="1" class="negrita" style="width:200px;">Cliente</td>

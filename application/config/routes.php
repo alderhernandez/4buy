@@ -174,6 +174,7 @@ $route["ExcelLiqUnid/(:any)"] = "Liquidacion_controller/exportarExcelLiquidacion
 $route["createXLS/(:any)/(:any)"] = "Reportes_controller/createXLS/$1/$2";
 $route["createXLSDetallado/(:any)/(:any)"] = "Reportes_controller/createXLSDetallado/$1/$2";
 $route["Reporte_Merma"] = "Reportes_controller/viewReporteMerma";
+$route["encabezadoMerma"] = "Reportes_controller/encabezadoMerma";
 $route["ReporteMerma"] = "Reportes_controller/reporteMermas";
 $route["printReporteMermas/(:any)/(:any)"] = "Reportes_controller/printReporteMermas/$1/$2";
 
