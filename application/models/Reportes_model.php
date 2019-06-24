@@ -277,8 +277,8 @@ class Reportes_model extends CI_Model
 		sum(ruta11) ruta11,sum(ruta12) ruta12,sum(ruta13) ruta13,sum(ruta14) ruta14,sum(ruta15) ruta15,
 		sum(ruta16) ruta16,sum(ruta17) ruta17,sum(ruta18) ruta18,sum(ruta19) ruta19,sum(ruta21) ruta21,sum(ruta22) ruta22,
 		sum(ruta23) ruta23,sum(ruta24) ruta24,sum(ruta25) ruta25,sum(ruta26) ruta26,sum(ruta27) ruta27,sum(ruta28) ruta28,
-		sum(ruta30) ruta30,sum(ruta31) ruta31 FROM
-		(select Ruta,NOMBRE,Codigo,Descripcion,VENDIDO,LIBRASVENDIDAS,LIBRASDEVOLUCION,
+		sum(ruta30) ruta30,sum(ruta31) ruta31,SUM(DEVOLUCIONES) Total FROM
+		(select Ruta,NOMBRE,Codigo,Descripcion,VENDIDO,LIBRASVENDIDAS,LIBRASDEVOLUCION,DEVOLUCIONES,
 		isnull([1],0) ruta1,isnull([2],0) ruta2,isnull([3],0) ruta3,isnull([4],0) ruta4,isnull([5],0) ruta5,isnull([6],0) ruta6,
 		isnull([7],0) ruta7,isnull([8],0) ruta8,isnull([9],0) ruta9,isnull([10],0) ruta10,isnull([11],0) ruta11,
 		isnull([12],0) ruta12,isnull([13],0) ruta13,isnull([14],0) ruta14,isnull([15],0) ruta15,isnull([16],0) ruta16,
@@ -289,6 +289,7 @@ class Reportes_model extends CI_Model
 		SELECT T0.IdRuta,T2.Ruta,T2.Nombre+' '+T2.Apellidos 'NOMBRE',  
 		T1.Codigo,t1.Descripcion,SUM(UnidadesVenTotal) 'VENDIDO',
 		MAX(T1.Carga)-SUM(T1.UnidadesVenTotal) 'DEVOLUCION',
+		MAX(T1.Carga)-SUM(T1.UnidadesVenTotal) 'DEVOLUCIONES',
 		SUM(t1.LibrasVendidas) 'LIBRASVENDIDAS',
 		(T1.PesoGramos*(MAX(T1.Carga)-SUM(T1.UnidadesVenTotal)))/454 'LIBRASDEVOLUCION'
 		FROM Liquidacion t0

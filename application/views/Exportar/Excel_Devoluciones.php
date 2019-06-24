@@ -96,6 +96,7 @@
 							<th class="text-center text-bold">ruta28</th>
 							<th class="text-center text-bold">ruta30</th>
 							<th class="text-center text-bold">ruta31</th>
+							<th class="text-center text-bold">Total</th>
 						</tr>	
 					</thead>
 				<tbody>
@@ -135,7 +136,8 @@
 									    <td class="text-center">'.number_format($key["ruta27"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta28"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta30"],2).'</td>
-									    <td class="text-center">'.number_format($key["ruta31"],2).'</td>
+										<td class="text-center">'.number_format($key["ruta31"],2).'</td>
+										<td class="text-center">'.number_format($key["Total"],2).'</td>
 									</tr>';				
 					}
 
