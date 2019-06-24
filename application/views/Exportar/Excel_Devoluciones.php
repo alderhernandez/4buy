@@ -66,6 +66,7 @@
 					<thead>
 						<tr>
 							<th class="text-center text-bold">Codigo</th>
+							<th class="text-center text-bold" style= "width:80px;">Descripcion</th>
 				            <th class="text-center text-bold">ruta1</th>
 							<th class="text-center text-bold">ruta2</th>
 							<th class="text-center text-bold">ruta3</th>
@@ -95,18 +96,17 @@
 							<th class="text-center text-bold">ruta28</th>
 							<th class="text-center text-bold">ruta30</th>
 							<th class="text-center text-bold">ruta31</th>
-							<th class="text-center text-bold">Total</th>
 						</tr>	
 					</thead>
 				<tbody>
 				<?php
 				if(!$dev){
 				}else {							
-						foreach ($dev as $key) {								
-							if($key["Total"] > 0){
+						foreach ($dev as $key) {		
 								echo '
 									<tr>
 										<td class="text-center">'.$key["Codigo"].'</td>
+										<td class="text-center">'.$key["Descripcion"].'</td>
 						                <td class="text-center">'.number_format($key["ruta1"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta2"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta3"],2).'</td>
@@ -136,9 +136,7 @@
 									    <td class="text-center">'.number_format($key["ruta28"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta30"],2).'</td>
 									    <td class="text-center">'.number_format($key["ruta31"],2).'</td>
-									    <td class="text-center text-bold">'.number_format($key["Total"],2).'</td>
-									</tr>';		
-							}				
+									</tr>';				
 					}
 
 				}
