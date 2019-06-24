@@ -54,22 +54,36 @@ class Liquidacion_model extends CI_Model
 		return 0;
 	}
 
+	public function validacionFechIinicio($fechaIn,$ruta){
+		$query = $this->db->query("select FechaFinal from Periodos 
+									where Activo in ('Y','N','P')
+									and cast(FechaFinal as date) = '".$fechaIn."'
+									and IdRuta = '".$ruta."' ");
+		if($query->num_rows() > 0){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
 	//region Funciones para Periodo Liquidacion
 	public function guardarPeriodo($fechaIn, $fechaFin, $horaInicio, $horaFin,$ruta){
 		date_default_timezone_set("America/Managua");
 		$actualiza = false; $mensaje = array();
 		$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1024");
 		if($permiso){
-			$duplicados = $this->evitarDuplicados($fechaIn,$fechaFin,$ruta);
-			if($duplicados == true){
-				$mensaje[0]["mensaje"] = "Ya existe un periodo de liquidacion con fecha inicio ".$fechaIn." y
-			 fecha final ".$fechaFin."
-			 para la ruta ".$ruta."";
-				$mensaje[0]["tipo"] = "error";
-				echo json_encode($mensaje);
-			}else{
-				$query = $this->db->query("select Activo,Liquidado from Periodos where IdRuta = '".$ruta."'
-			and Activo not in ('C','N','P')");
+			$FechaInicioVali = $this->validacionFechIinicio($fechaIn,$ruta);
+			if($FechaInicioVali){
+				$duplicados = $this->evitarDuplicados($fechaIn,$fechaFin,$ruta);
+				if($duplicados == true){
+					$mensaje[0]["mensaje"] = "Ya existe un periodo de liquidacion con fecha inicio ".$fechaIn." y
+				fecha final ".$fechaFin."
+				para la ruta ".$ruta."";
+					$mensaje[0]["tipo"] = "error";
+					echo json_encode($mensaje);
+				}else{
+					$query = $this->db->query("select Activo,Liquidado from Periodos where IdRuta = '".$ruta."'
+				and Activo not in ('C','N','P')");
 				if($query->num_rows() == 0){
 					$actualiza = true;
 				}
@@ -105,6 +119,13 @@ class Liquidacion_model extends CI_Model
 					echo json_encode($mensaje);
 				}
 			}
+		 }else{
+
+		        $mensaje[0]["mensaje"] = "La fecha del nuevo periodo no puede iniciar con ".$fechaIn." ya que otro periodo  
+				 que ya esta liquidado termina con esta fecha para la ruta ".$ruta."";
+				$mensaje[0]["tipo"] = "error";
+				echo json_encode($mensaje);
+		 }
 		}else{
 			$mensaje[0]["mensaje"] = "No tienes permiso para realizar esta operacion";
 			$mensaje[0]["tipo"] = "error";
@@ -178,7 +199,6 @@ class Liquidacion_model extends CI_Model
 	//endregion
 
 	public function Liquidacion($idPeriodo){
-
 		$json = array(); $i = 0; $e = 0;
 		$notin = "";
 		$query = $this->db->where("IdPeriodo", $idPeriodo)
