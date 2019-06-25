@@ -444,7 +444,41 @@ class Reportes_model extends CI_Model
 		)
 	
 		--select final para obtener la secuencia
-		SELECT DATEPART(DAY,Fecha) as Dias
+		SELECT DATEPART(DAY,Fecha)  AS Dias
+		FROM DateSequence where DATEPART(dw,Fecha) <> 1 
+		OPTION (MAXRECURSION 3000)
+		");
+		if($query->num_rows()>0){
+			foreach ($query->result_array() as $key) {
+				for($var = 1; $var <= count($key); $var ++){
+					$json[$i]["Dias"] = $key["Dias"];
+				}
+				$i++;
+			}
+			if($bandera){
+				echo json_encode($json);	
+				return;
+			}
+			return $query->result_array();
+		}
+		return 0;
+	}
+
+
+	public function encabezadoMerma2($rango1,$rango2,$bandera){
+		$json = array();
+		$i = 0;
+		$query = $this->db->query("DECLARE @FechaDesde date = '".$rango1."', @FechaHasta date = '".$rango2."';
+		WITH DateSequence(Fecha) AS
+		(   SELECT @FechaDesde as Fecha
+			UNION ALL 
+			SELECT DATEADD(DAY, 1, Fecha)
+			FROM DateSequence
+			WHERE Fecha < @FechaHasta
+		)
+	
+		--select final para obtener la secuencia
+		SELECT 'DIA'+CAST(DATEPART(DAY,Fecha) AS VARCHAR) as Dias
 		FROM DateSequence where DATEPART(dw,Fecha) <> 1 
 		OPTION (MAXRECURSION 3000)
 		");

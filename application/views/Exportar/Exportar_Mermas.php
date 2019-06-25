@@ -18,7 +18,7 @@
 		.bold{font-weight: bolder}
 	</style>
 	<script type="text/javascript">
-		//window.print();
+		window.print();
 	</script>
 </head>
 <body>
@@ -137,23 +137,26 @@
 									$total += $key["Total"];		
 								}
 								echo '<th class="text-right">'.number_format($total,2).'</th>';
-							}
-							if(!$mermas){
-							}else {							
-								foreach ($mermas as $key) {	
-									if(!$enc){
-									}else{
-										foreach ($enc as $key1) {
-											for($i = 1; $i <= count($key1); $i++){
-												if($key["DIA".$key1["Dias"].""] != NULL){
-													$array[] = $key["DIA".$key1["Dias"].""];
-												}
-											}
-										}
-									}				
-								}
+
 							}
 						?>
+
+						<?php 
+                               if(!$enc){
+								}else{
+									foreach ($enc2 as $key) {
+										for($i = 1; $i <= count($key); $i++){											
+											$pinky = 0;	
+											foreach ($mermas as $key2) {												
+													$pinky += $key2[$key["Dias"]];												
+											}										
+											echo '<td class="text-right">'.number_format($pinky,2).'</td>';
+											$pinky = 0;
+
+										}
+									}
+								}
+							?>
 				   </tr>
 				</tfoot>
 				</table>

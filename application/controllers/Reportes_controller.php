@@ -219,6 +219,7 @@ class Reportes_controller extends CI_Controller {
     }
 
     public function ReporteDeVentas(){
+
     	$fechainicio = $this->input->get_post("fechainicio");
     	$fechafinal = $this->input->get_post("fechafinal");
     	$codRuta = $this->input->get_post("ruta");
@@ -250,6 +251,7 @@ class Reportes_controller extends CI_Controller {
 		{
 			$data["mermas"] = $this->Reportes_model->reporteMermas($rango1,$rango2,false);	
 			$data["enc"] = $this->Reportes_model->encabezadoMerma($rango1,$rango2,false);			
+			$data["enc2"] = $this->Reportes_model->encabezadoMerma2($rango1,$rango2,false);			
 			$this->load->view('Exportar/Exportar_Mermas',$data);	
 		}
 
