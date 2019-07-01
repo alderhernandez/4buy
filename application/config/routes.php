@@ -177,7 +177,9 @@ $route["Reporte_Merma"] = "Reportes_controller/viewReporteMerma";
 $route["encabezadoMerma"] = "Reportes_controller/encabezadoMerma";
 $route["ReporteMerma"] = "Reportes_controller/reporteMermas";
 $route["printReporteMermas/(:any)/(:any)"] = "Reportes_controller/printReporteMermas/$1/$2";
-
-//grafias
+$route["VentasDepositos"] = "Reportes_controller/viewReporteVentasDeposito";
+$route["reporteDeVentasDeposito"] = "Reportes_controller/reporteDeVentasDeposito";
+$route["printVentasDep/(:any)/(:any)/(:any)"] = "Reportes_controller/printReporteDeVentasDeposito/$1/$2/$3";
+//graficas
 
 $route["grafica/(:any)/(:any)/(:any)/(:any)"] = "Cuotas_controller/grafica/$1/$2/$3/$4";

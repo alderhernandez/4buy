@@ -425,6 +425,11 @@
 										</a>
 									</li>
 									<li>
+										<a href="<?php echo base_url("index.php/VentasDepositos")?>">
+											Reporte de Ventas para depósito
+										</a>
+									</li>
+									<li>
 										<a href="<?php echo base_url("index.php/rptDevolucionesRuta")?>"> 
 											Reporte de Devoluciones por ruta
 										</a>

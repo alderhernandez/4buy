@@ -497,6 +497,67 @@ class Reportes_model extends CI_Model
 		}
 		return 0;
 	}
+
+	public function mostrarVendForaneos(){
+		$query = $this->db->query("SELECT t1.ID,t1.DESCRIPCION,t2.IdRuta,t2.Ruta
+														FROM CategoriasRutas t1
+													inner join Usuarios t2 on t1.ID = t2.IdCatRuta
+													where t1.ID = 4");
+		if($query->num_rows()  >0){
+			return $query->result_array();
+		}
+		return 0;
+	}
+
+	public function reporteDeVentasDeposito($fechaInicio,$fechaFin,$ruta,$bandera){
+		$json = array(); $i = 0; $queryRuta = '';
+		if($ruta){
+			$queryRuta = "AND T0.CODVENDEDOR = '".$ruta."' ";
+		}else if($ruta == 0){
+			$queryRuta = "AND T0.CODVENDEDOR in ( SELECT t2.IdRuta
+			FROM CategoriasRutas t1
+			inner join Usuarios t2 on t1.ID = t2.IdCatRuta
+			where t1.ID = 4) ";
+		}else{
+			$queryRuta = "AND T0.CODVENDEDOR in ( SELECT t2.IdRuta
+			FROM CategoriasRutas t1
+			inner join Usuarios t2 on t1.ID = t2.IdCatRuta
+			where t1.ID = 4) ";
+		}
+
+		$query = $this->db->query("SELECT T2.IdCatRuta,T3.DESCRIPCION, T0.CODVENDEDOR, T2.Ruta,  
+			SUM(CASE WHEN T0.CODCONDPAGO = '-1' THEN 1 ELSE 0 END) NOFACTURASCONTADO,
+			SUM(CASE WHEN T0.CODCONDPAGO = '-1' THEN T0.TOTAL ELSE 0 END) TOTALCONTADO,
+			SUM(CASE WHEN T0.CODCONDPAGO <> '-1' THEN 1 ELSE 0 END) NOFACTURASCREDITO,
+			SUM(CASE WHEN T0.CODCONDPAGO <> '-1' THEN T0.TOTAL ELSE 0 END) TOTALCREDITO
+			FROM Facturas T0
+			INNER JOIN Usuarios T2 ON T2.IdRuta = T0.CODVENDEDOR
+			INNER JOIN CategoriasRutas T3 ON T3.ID = T2.IdCatRuta
+			WHERE CAST(T0.FECHA AS DATE) >='".$fechaInicio."' AND CAST(T0.FECHA AS DATE) <= '".$fechaFin."' ".$queryRuta."
+			AND T0.ESTADOAPP <> 4  
+			GROUP BY  T2.IdCatRuta,T3.DESCRIPCION,T0.CODVENDEDOR, T2.Ruta
+			ORDER BY T0.CODVENDEDOR
+			");
+		 
+		 if($query->num_rows() > 0){
+			foreach ($query->result_array() as $key) {
+				$json["data"][$i]["CODVENDEDOR"] = $key["CODVENDEDOR"];
+				$json["data"][$i]["RUTA"] = $key["Ruta"];
+				$json["data"][$i]["NOFACTURASCONTADO"] = $key["NOFACTURASCONTADO"];
+				$json["data"][$i]["TOTALCONTADO"] = number_format($key["TOTALCONTADO"],2);
+				$json["data"][$i]["NOFACTURASCREDITO"] = $key["NOFACTURASCREDITO"];
+				$json["data"][$i]["TOTALCREDITO"] = number_format($key["TOTALCREDITO"],2);
+				$i++;
+			}
+
+			if ($bandera) {
+				echo json_encode($json);
+				return;
+			}
+			return $query->result_array();
+		 }
+		 return 0;
+	}	
 } 
 
 /* End of file Reportes_model.php */
