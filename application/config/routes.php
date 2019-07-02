@@ -179,3 +179,4 @@ $route["printReporteMermas/(:any)/(:any)"] = "Reportes_controller/printReporteMe
 //grafias
 
 $route["grafica/(:any)/(:any)/(:any)/(:any)"] = "Cuotas_controller/grafica/$1/$2/$3/$4";
+$route["librasXdia"] = "Cuotas_controller/librasXdia";
