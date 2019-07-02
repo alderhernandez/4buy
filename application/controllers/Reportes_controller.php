@@ -219,6 +219,7 @@ class Reportes_controller extends CI_Controller {
     }
 
     public function ReporteDeVentas(){
+
     	$fechainicio = $this->input->get_post("fechainicio");
     	$fechafinal = $this->input->get_post("fechafinal");
     	$codRuta = $this->input->get_post("ruta");
@@ -240,12 +241,41 @@ class Reportes_controller extends CI_Controller {
 			$this->Reportes_model->reporteMermas($rango1,$rango2,TRUE);
 		}
 
-		public function printReporteMermas($rango1,$rango2)
-		{
-			$data["mermas"] = $this->Reportes_model->reporteMermas($rango1,$rango2,false);			
-			$this->load->view('Exportar/Exportar_Mermas',$data);	
+		public function encabezadoMerma(){
+			$rango1 = $this->input->get_post("rango1");
+			$rango2 = $this->input->get_post("rango2");
+			$this->Reportes_model->encabezadoMerma($rango1,$rango2,TRUE);
 		}
 
+		public function printReporteMermas($rango1,$rango2)
+		{
+			$data["mermas"] = $this->Reportes_model->reporteMermas($rango1,$rango2,false);	
+			$data["enc"] = $this->Reportes_model->encabezadoMerma($rango1,$rango2,false);			
+			$data["enc2"] = $this->Reportes_model->encabezadoMerma2($rango1,$rango2,false);			
+			$this->load->view('Exportar/Exportar_Mermas',$data);	
+		}
+		/*******************************************************************************************************/
+		public function viewReporteVentasDeposito(){
+			$data["foraneos"] = $this->Reportes_model->mostrarVendForaneos();
+			$this->load->view('header/header');
+			$this->load->view('header/menu');
+			$this->load->view('Reportes/reporte_venta_deposito',$data);
+			$this->load->view('footer/footer');
+			$this->load->view('jsView/reportes/jsreporte_ventas_deposito');
+		}
+
+		public function reporteDeVentasDeposito(){
+			$fechaInicio = $this->input->get_post("fechainicio");
+			$fechaFin = $this->input->get_post("fechafinal");
+			$ruta = $this->input->get_post("ruta");
+			$this->Reportes_model->reporteDeVentasDeposito($fechaInicio,$fechaFin,$ruta,true);
+		}
+
+		public function printReporteDeVentasDeposito($fechaInicio,$fechaFin,$ruta)
+		{
+			$data["ventasdep"] = $this->Reportes_model->reporteDeVentasDeposito($fechaInicio,$fechaFin,$ruta,false);
+			$this->load->view('Exportar/Exportar_ventasDeposito',$data);	
+		}
 		//end region
 }
 

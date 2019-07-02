@@ -49,18 +49,7 @@
 							<div class="col-12 col-sm-12 col-md-12 col-xs-12">
 								<table id="tblMermas" class="table table-bordered table-striped mb-none table-xl">
 									<thead>
-									<tr>
-										<th>Codigo</th>
-										<th>Desc</th>
-                                        <th>Total</th>
-                                        <?php 
-                                            for ($i=1; $i <=31 ; $i++) { 
-                                                echo '
-                                                    <th>'.$i.'</th>
-                                                ';
-                                            }
-                                        ?>
-									</tr>
+									     <tr></tr>
 									</thead>
 									<tbody>
 									</tbody>

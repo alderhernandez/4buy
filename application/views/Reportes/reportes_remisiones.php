@@ -43,9 +43,11 @@
 									<select id="Rubro" data-plugin-selectTwo  class="form-control col12 col-md-12 col-sm-12 populate">
 										<option selected></option>
 										<option value="1">Detalle</option>
-										<option value="2">Supermercado</option>
-										<option value="3">Hoteles y/o Restaurantes</option>
-										<option value="4">Foraneo</option>
+                   				 		<option value="2">Supermercado</option>
+                    					<option value="3">Hoteles y/o Restaurantes</option>
+									    <option value="4">Foráneo</option>
+										<option value="5">Venta Local</option>
+   										<option value="6">Supermercado Foráneo</option>
 									</select>
 								</div>
 							</div>

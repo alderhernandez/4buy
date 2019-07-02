@@ -168,9 +168,9 @@
 						<a class="text-muted" href="#unidad" data-toggle="tab" aria-expanded="true">Por unidad</a>
 					</li>
 				</ul>
-				<div class="tab-content">
+				<div class="tab-content" style="overflow-x: scroll;">
 					<div id="general" class="tab-pane active">
-						<div class="">
+						<div class="row" style="width: 150%">
 							<table class="table table-condensed table-bordered table-striped" id="tblDetFactLiq">
 								<thead>
 								<tr class="text-dark">

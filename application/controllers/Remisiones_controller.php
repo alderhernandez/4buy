@@ -190,6 +190,11 @@ class Remisiones_controller extends CI_Controller {
 		$this->Hana_model->getProductosRutas($var);
 	}
 
+	public function getProductosMermas(){
+		$var = $this->input->post("q"); 
+		$this->Hana_model->getProductosMermas($var);
+	}
+
 	public function guardarRemision(){
 		$permiso = $this->Autorizaciones_model->validarPermiso($this->session->userdata("id"), "1009");
 		if($permiso){

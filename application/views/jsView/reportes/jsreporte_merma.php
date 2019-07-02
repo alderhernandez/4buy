@@ -1,33 +1,6 @@
 <script type="text/javascript">
  $(document).ready(function(){
-    $("#tblMermas").DataTable({
-			"scrollX": true,
-			"destroy": true,
-			"lengthMenu": [
-			[10,20,50,100, -1],
-			[10,20,50,100, "Todo"]
-		],
-		fixedColumns:   {
-            leftColumns: 3
-        },
-			"language": {
-			"info": "Registro _START_ a _END_ de _TOTAL_ entradas",
-			"infoEmpty": "Registro 0 a 0 de 0 entradas",
-			"zeroRecords": "No se encontro coincidencia",
-			"infoFiltered": "(filtrado de _MAX_ registros en total)",
-			"emptyTable": "NO HAY DATOS DISPONIBLES",
-			"lengthMenu": '_MENU_ ',
-			"search": '<i class="fa fa-search"></i>',
-			"loadingRecords": "",
-			"processing": "Procesando datos  <i class='fa fa-spin fa-refresh'></i>",
-			"paginate": {
-				"first": "Primera",
-				"last": "Última ",
-				"next": "Siguiente",
-				"previous": "Anterior"
-			}
-		}
-		});	
+    
  });
 
  $("#btnGenerarRpt").click(function(){
@@ -44,78 +17,55 @@
 			allowOutsideClick: false
 		});
 	}else{
-            $("#tblMermas").DataTable({
-                "ajax":{
-                    "url": "ReporteMerma",
-                    "type": "POST",
-                    "data": function (d){
-                        d.rango1 = $("#fechaRang1").val();
-                        d.rango2 = $("#fechaRang2").val();	
-                    }
-                },
-                "scrollX": true,
-                "destroy": true,
-                "processing": true,
-                "lengthMenu": [
-                [10,20,50,100, -1],
-                [10,20,50,100, "Todo"]
-            ],
-            fixedColumns:   {
-                leftColumns: 3
-            },
-                "language": {
-                "info": "Registro _START_ a _END_ de _TOTAL_ entradas",
-                "infoEmpty": "Registro 0 a 0 de 0 entradas",
-                "zeroRecords": "No se encontro coincidencia",
-                "infoFiltered": "(filtrado de _MAX_ registros en total)",
-                "emptyTable": "NO HAY DATOS DISPONIBLES",
-                "lengthMenu": '_MENU_ ',
-                "search": '<i class="fa fa-search"></i>',
-                "loadingRecords": "",
-                "processing": "Procesando datos  <i class='fa fa-spin fa-refresh'></i>",
-                "paginate": {
-                    "first": "Primera",
-                    "last": "Última ",
-                    "next": "Siguiente",
-                    "previous": "Anterior"
-                }
-            },
-            "columns": [
-            {"data" : "codigo", className: "text-bold"},
-            {"data" : "Descripcion", className: "text-bold"},
-            {"data" : "Total", className: "text-bold" },
-            {"data" : "1"},
-            {"data" : "2"},
-            {"data" : "3"},
-            {"data" : "4"},
-            {"data" : "5"},
-            {"data" : "6"},
-            {"data" : "7"},
-            {"data" : "8"},
-            {"data" : "9"},
-            {"data" : "10"},
-            {"data" : "11"},
-            {"data" : "12"},
-            {"data" : "13"},
-            {"data" : "14"},
-            {"data" : "15"},
-            {"data" : "16"},
-            {"data" : "17"},
-            {"data" : "18"},
-            {"data" : "19"},
-            {"data" : "20"},
-            {"data" : "21"},
-            {"data" : "22"},
-            {"data" : "23"},
-            {"data" : "24"},
-            {"data" : "25"},
-            {"data" : "26"},
-            {"data" : "27"},
-            {"data" : "28"},
-            {"data" : "29"},
-            {"data" : "30"},
-            {"data" : "31"}]
-      });	
+        $('[data-toggle="tooltip"]').tooltip();
+        let html = '', obj = ''; 
+        $("#tblMermas thead tr").html("");
+        $("#loading").modal("show");
+        let form_data = {
+            rango1: $("#fechaRang1").val(),
+            rango2: $("#fechaRang2").val()
+        };
+
+         $.ajax({
+             url: "encabezadoMerma",
+             type: "POST",
+             data: form_data,
+             success: function(data){
+                 html += '<th>Codigo</th>';
+                 html += '<th>Total</th>';
+                 obj = jQuery.parseJSON(data);
+                $.each(obj, function(i, index){
+                    html += '<th>'+index["Dias"]+'</th>';
+                });
+                $("#tblMermas thead tr").append(html);
+             }
+         }).then(function(){
+            $("#tblMermas tbody").html("");
+            let html1 = '';
+            let form_data1 = {
+                rango1: $("#fechaRang1").val(),
+                rango2: $("#fechaRang2").val()
+            };
+            $.ajax({
+             url: "ReporteMerma",
+             type: "POST",
+             data: form_data1,
+             success: function(data){
+                let obj1 = jQuery.parseJSON(data);
+                $.each(obj1, function(i, index){
+                    html1 += '<tr><td data-toggle="tooltip" data-placement="top" title="'+index["Descripcion"]+'">'+index["codigo"]+'</td>'+
+                    '<td>'+index["Total"]+'</td>';
+                    $.each(obj, function(l, item){
+                        html1 += '<td>'+index["DIA"+item["Dias"]+""] +'</td>';  
+                    });
+                    html += '</tr>';
+                });
+                $("#tblMermas tbody").append(html1);
+                $("#loading").modal("hide");
+             }
+           });
+           //$("#tblMermas").DataTable();
+        });       
     }
  });
 

@@ -6,8 +6,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
+	//'hostname' => '192.168.1.203',
 	'hostname' => 'SERVER-APPS\MSSQLSERVER2',
-	'username' => 'sa',
+	'username' => 'sa',   
+	//'password' => '123',
 	'password' => 'Delmor2k18!',
 	'database' => '4BUY',
 	'dbdriver' => 'sqlsrv',
@@ -28,9 +30,9 @@ $db['default'] = array(
 
 $db['dbintegracion'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.1.5',
-	'username' => 'ICGAdmin',
-	'password' => 'masterkey',
+	'hostname' => '192.168.1.5',//'192.168.1.5',
+	'username' => 'ICGAdmin', //'ICGAdmin',
+	'password' => 'masterkey',//'masterkey',
 	'database' => 'SCGIntegracionDELMOR',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',

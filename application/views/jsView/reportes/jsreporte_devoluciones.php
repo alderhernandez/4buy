@@ -62,7 +62,7 @@ $("#btnGenerarRpt").click(function(){
 			[10,20,50,100, "Todo"]
 		],
 		fixedColumns:   {
-            leftColumns: 1
+            leftColumns: 2
         },
 			"language": {
 			"info": "Registro _START_ a _END_ de _TOTAL_ entradas",
@@ -83,6 +83,7 @@ $("#btnGenerarRpt").click(function(){
 		},
 		"columns": [
 		{"data" : "Codigo"},
+		{"data" : "Descripcion"},
 		{"data" : "ruta1"},
 		{"data" : "ruta2"},
 		{"data" : "ruta3"},
@@ -111,8 +112,7 @@ $("#btnGenerarRpt").click(function(){
 		{"data" : "ruta27"},
 		{"data" : "ruta28"},
 		{"data" : "ruta30"},
-		{"data" : "ruta31"},
-		{"data" : "Total", className: "text-bold" }
+		{"data" : "ruta31"}
 	]
 	});	
 	}

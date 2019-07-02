@@ -48,6 +48,7 @@
 									<thead>
 									<tr>
 										<th>Codigo</th>
+										<th>Descripcion</th>
 										<th>ruta1</th>
 									    <th>ruta2</th>
 									    <th>ruta3</th>
@@ -77,7 +78,6 @@
 									    <th>ruta28</th>
 									    <th>ruta30</th>
 									    <th>ruta31</th>
-									    <th>Total</th>
 									</tr>
 									</thead>
 									<tbody>

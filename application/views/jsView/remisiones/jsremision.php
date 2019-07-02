@@ -326,13 +326,6 @@ $("#btnAgregar").click(function(){
 
 $("body").on("click", "tr", function(){
 	$(this).toggleClass("danger");
-	if($(this).hasClass("danger")){
-		$("#btnSaveRem").hide();
-		$("#buttonsRem").show()
-	}else{
-		$("#btnSaveRem").show();
-		$("#buttonsRem").hide()
-	}
 });
 
 $("#btnDelete").click(function() {

@@ -82,14 +82,17 @@
 					<thead>
 						<tr>
 							<th class="text-center text-bold">Codigo</th>
-				            <th width="71" class="text-center text-bold">Descripcion</th>
-                            <th width="46" class="text-center text-bold">Total</th>
-                            <?php 
-                                for ($i=1; $i <=31 ; $i++) { 
-                                   echo '
-                                           <th>'.$i.'</th>
-                                      ';
-                                }
+				            <th class="text-center text-bold">Descripcion</th>
+                            <th class="text-center text-bold">Total</th>
+							<?php 
+                               if(!$enc){
+								}else{
+									foreach ($enc as $key) {
+										for($i = 1; $i <= count($key); $i++){
+											echo "<th>".$key["Dias"]."</th>";
+										}
+									}
+								}
                             ?>
 						</tr>	
 					</thead>
@@ -97,26 +100,66 @@
 				<?php
 				if(!$mermas){
 				}else {							
-						foreach ($mermas as $key) {								
+						foreach ($mermas as $key) {		
 							if($key["Total"] >= 0){
 								echo '
 									<tr>
-                                        <td class="text-center">'.$key["codigo"].'</td>
-                                        <td style="font-size:8px;" class="text-center" wid>'.$key["Descripcion"].'</td>
-                                        <td class="text-center">'.$key["Total"].'</td>
-                                        ';
-                                        for ($i=1; $i <= 31 ; $i++) { 
-                                            echo '
-                                              <td class="text-center">'.$key["".$i.""].'</td>
-                                            ';
-                                        }
-								echo '</tr>';		
-							}				
+                                        <td width="20" class="text-right">'.$key["Codigo"].'</td>
+                                        <td class="text-right">'.$key["Descripcion"].'</td>
+										<td class="text-right">'.number_format($key["Total"],2).'</td>';
+										if(!$enc){
+										}else{
+											foreach ($enc as $key1) {
+												for($i = 1; $i <= count($key1); $i++){
+													if($key["DIA".$key1["Dias"].""] != NULL){
+														echo "<td class='text-right'>".number_format($key["DIA".$key1["Dias"].""],2)."</td>";
+													}else{
+														echo "<td class='text-right'>0.00</td>";
+													}
+												}
+											}
+										}
+							 echo' </tr>';		
+						}				
 					}
-
 				}
 				?>
-				</tbody></table>
+				</tbody>
+				<tfoot>
+				   <tr>
+				   		<th colspan="2" class="text-bold text-center">TOTAL</th>
+						<?php
+						    $array = array();
+							$total = 0; $dias = 0;
+							if(!$mermas){
+							}else {							
+								foreach ($mermas as $key) {
+									$total += $key["Total"];		
+								}
+								echo '<th class="text-right">'.number_format($total,2).'</th>';
+
+							}
+						?>
+
+						<?php 
+                               if(!$enc){
+								}else{
+									foreach ($enc2 as $key) {
+										for($i = 1; $i <= count($key); $i++){											
+											$pinky = 0;	
+											foreach ($mermas as $key2) {												
+													$pinky += $key2[$key["Dias"]];												
+											}										
+											echo '<td class="text-right">'.number_format($pinky,2).'</td>';
+											$pinky = 0;
+
+										}
+									}
+								}
+							?>
+				   </tr>
+				</tfoot>
+				</table>
 			</div>
 			<br>
 			<br>			

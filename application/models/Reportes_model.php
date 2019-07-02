@@ -219,7 +219,7 @@ class Reportes_model extends CI_Model
 									- 
 									CAST(MIN(RIGHT(IDFACTURA,LEN(IDFACTURA)-CHARINDEX('-', IDFACTURA)))AS INT)+1 NUMERO
 									FROM Facturas 
-									WHERE FECHA BETWEEN '".$fecha1."' AND '".$fecha2."' 
+									WHERE CAST(FECHA AS DATE) >= '".$fecha1."' AND CAST(FECHA AS DATE) <= '".$fecha2."' 
 									GROUP BY LEFT(IDFACTURA,CHARINDEX('-', IDFACTURA)-1)
 									ORDER BY LEFT(IDFACTURA,CHARINDEX('-', IDFACTURA)-1) ASC");
 		if ($query->num_rows()>0) {
@@ -247,7 +247,7 @@ class Reportes_model extends CI_Model
 									t0.CODVENDEDOR,t1.Nombre,t1.Apellidos
 									FROM Facturas t0 
 									inner join Usuarios t1 on t1.IdRuta = t0.CODVENDEDOR
-									WHERE FECHA BETWEEN '".$fecha1."' AND '".$fecha2."' 
+									WHERE CAST(FECHA AS DATE) >= '".$fecha1."' AND CAST(FECHA AS DATE) <= '".$fecha2."' 
 									GROUP BY LEFT(t0.IDFACTURA,CHARINDEX('-', t0.IDFACTURA)-1),
 									RIGHT(t0.IDFACTURA,LEN(t0.IDFACTURA)-CHARINDEX('-', t0.IDFACTURA)),t0.CODVENDEDOR,t1.Nombre,t1.Apellidos
 									ORDER BY LEFT(t0.IDFACTURA,CHARINDEX('-', t0.IDFACTURA)-1) ASC");
@@ -271,48 +271,54 @@ class Reportes_model extends CI_Model
 	public function devolucionesPorRutas($fecha1,$fecha2,$bandera){
 		$json = array();
 		$i = 0;
-		$query = $this->db->query("
-			            SELECT Codigo, sum(ruta1) ruta1,sum(ruta2) ruta2,sum(ruta3) ruta3,sum(ruta4) ruta4,sum(ruta5) ruta5,
-						sum(ruta6) ruta6,sum(ruta7) ruta7,sum(ruta8) ruta8,sum(ruta9) ruta9,sum(ruta10) ruta10,
-						sum(ruta11) ruta11,sum(ruta12) ruta12,sum(ruta13) ruta13,sum(ruta14) ruta14,sum(ruta15) ruta15,
-						sum(ruta16) ruta16,sum(ruta17) ruta17,sum(ruta18) ruta18,sum(ruta19) ruta19,sum(ruta21) ruta21,sum(ruta22) ruta22,
-						sum(ruta23) ruta23,sum(ruta24) ruta24,sum(ruta25) ruta25,sum(ruta26) ruta26,sum(ruta27) ruta27,sum(ruta28) ruta28,
-						sum(ruta30) ruta30,sum(ruta31) ruta31, sum(ruta1) + sum(ruta2) + sum(ruta3) + sum(ruta4) +sum(ruta5) +
-						sum(ruta6) +sum(ruta7) +sum(ruta8) +sum(ruta9) +sum(ruta10) +
-						sum(ruta11) +sum(ruta12) +sum(ruta13) +sum(ruta14) +sum(ruta15) +
-						sum(ruta16) +sum(ruta17) +sum(ruta18) +sum(ruta19) +sum(ruta21) +sum(ruta22) +
-						sum(ruta23) +sum(ruta24) +sum(ruta25) +sum(ruta26) +sum(ruta27) +sum(ruta28) +
-						sum(ruta30) +sum(ruta31) Total
-						from 
-					(select codigo,isnull([1],0) ruta1,isnull([2],0) ruta2,isnull([3],0) ruta3,isnull([4],0) ruta4,isnull([5],0) ruta5,isnull([6],0) ruta6,
-						        isnull([7],0) ruta7,isnull([8],0) ruta8,isnull([9],0) ruta9,isnull([10],0) ruta10,isnull([11],0) ruta11,
-								isnull([12],0) ruta12,isnull([13],0) ruta13,isnull([14],0) ruta14,isnull([15],0) ruta15,isnull([16],0) ruta16,
-								isnull([17],0) ruta17,isnull([18],0) ruta18,isnull([19],0) ruta19,isnull([21],0) ruta21,
-							    isnull([22],0) ruta22,isnull([23],0) ruta23,isnull([24],0) ruta24,isnull([25],0) ruta25,isnull([26],0) ruta26,
-								isnull([27],0) ruta27,isnull([28],0) ruta28,isnull([30],0) ruta30,isnull([31],0) ruta31 from 
-						  (select t1.IdLiquidacion,t1.IdRuta,t1.Liquidado,
-								t2.Codigo,t2.Descripcion,t2.Devolucion
-								from Liquidacion t1
-								inner join Liquidacion_Detalle t2 
-								on t2.IdLiquidacion = t1.IdLiquidacion
-								where cast(t1.FechaCrea as date) >= '".$fecha1."'
-								and cast(t1.FechaCrea as date) <= '".$fecha2."')
-								as tabla
-								pivot
-								(
-									sum(Devolucion)
-									for IdRuta in ([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12],[13],[14],[15],[16],[17],[18],[19],[21],
-									               [22],[23],[24],[25],[26],[27],[28],[30],[31])
-								) as pvt
-							group by Codigo,[1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12],[13],[14],[15],[16],[17],[18],[19],[21],
-									               [22],[23],[24],[25],[26],[27],[28],[30],[31] 
-						)as tabla2
-						group by Codigo
+		$query = $this->db->query("WITH TABLA AS (
+			SELECT T0.IdLiquidacion, T0.FechaCrea, T0.IdRuta,T2.Ruta,T2.Nombre+' '+T2.Apellidos 'NOMBRE',  
+			T1.Codigo,t1.Descripcion,SUM(UnidadesVenTotal) 'VENDIDO',
+			MAX(T1.Carga)-SUM(T1.UnidadesVenTotal) 'DEVOLUCION',
+			SUM(t1.LibrasVendidas) 'LIBRASVENDIDAS',
+			(T1.PesoGramos*(MAX(T1.Carga)-SUM(T1.UnidadesVenTotal)))/454 'LIBRASDEVOLUCION'
+			FROM Liquidacion t0
+			INNER JOIN Liquidacion_Detalle T1 ON T1.IdLiquidacion = T0.IdLiquidacion
+			INNER JOIN Usuarios T2 ON T2.IdRuta = T0.IdRuta
+			---where t0.IdLiquidacion = 1807 --cast (FechaCrea as date ) >='20190622' AND  cast (FechaCrea as date ) <='20190622'
+			GROUP BY T0.IdLiquidacion,T0.FechaCrea, T0.IdRuta,T2.Ruta,T2.Nombre+' '+T2.Apellidos, T1.Codigo,t1.Descripcion,T1.PesoGramos
+	 )
+	 SELECT Codigo,Descripcion,
+	 sum(ruta1) ruta1,sum(ruta2) ruta2,sum(ruta3) ruta3,sum(ruta4) ruta4,sum(ruta5) ruta5,
+	 sum(ruta6) ruta6,sum(ruta7) ruta7,sum(ruta8) ruta8,sum(ruta9) ruta9,sum(ruta10) ruta10,
+	 sum(ruta11) ruta11,sum(ruta12) ruta12,sum(ruta13) ruta13,sum(ruta14) ruta14,sum(ruta15) ruta15,
+	 sum(ruta16) ruta16,sum(ruta17) ruta17,sum(ruta18) ruta18,sum(ruta19) ruta19,sum(ruta21) ruta21,sum(ruta22) ruta22,
+	 sum(ruta23) ruta23,sum(ruta24) ruta24,sum(ruta25) ruta25,sum(ruta26) ruta26,sum(ruta27) ruta27,sum(ruta28) ruta28,
+	 sum(ruta30) ruta30,sum(ruta31) ruta31,SUM(DEVOLUCIONES) Total FROM
+	 (select Ruta,NOMBRE,Codigo,Descripcion,DEVOLUCIONES,
+	 isnull([1],0) ruta1,isnull([2],0) ruta2,isnull([3],0) ruta3,isnull([4],0) ruta4,isnull([5],0) ruta5,isnull([6],0) ruta6,
+	 isnull([7],0) ruta7,isnull([8],0) ruta8,isnull([9],0) ruta9,isnull([10],0) ruta10,isnull([11],0) ruta11,
+	 isnull([12],0) ruta12,isnull([13],0) ruta13,isnull([14],0) ruta14,isnull([15],0) ruta15,isnull([16],0) ruta16,
+	 isnull([17],0) ruta17,isnull([18],0) ruta18,isnull([19],0) ruta19,isnull([21],0) ruta21,
+	 isnull([22],0) ruta22,isnull([23],0) ruta23,isnull([24],0) ruta24,isnull([25],0) ruta25,isnull([26],0) ruta26,
+	 isnull([27],0) ruta27,isnull([28],0) ruta28,isnull([78],0) ruta30,isnull([79],0) ruta31
+	 from(
+	 SELECT IdRuta,Ruta,NOMBRE,Codigo,Descripcion,SUM(DEVOLUCION) DEVOLUCION, SUM(DEVOLUCION) DEVOLUCIONES FROM TABLA
+	 WHERE cast (FechaCrea as date ) >='".$fecha1."' AND  cast (FechaCrea as date ) <='".$fecha1."'
+	 and DEVOLUCION > 0
+	 GROUP BY IdRuta,Ruta,NOMBRE,Codigo,Descripcion
+	 
+	 ) as tabla
+	 pivot 
+	 (
+	   sum(DEVOLUCION)
+	   for IdRuta in ([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],
+					  [12],[13],[14],[15],[16],[17],[18],[19],[21],
+					  [22],[23],[24],[25],[26],[27],[28],[78],[79])
+	 ) as pvt
+	 )AS TABLA2
+	 group by  Codigo,Descripcion
+	 ORDER BY Codigo
                       ");
 		if($query->num_rows() > 0){
 			foreach ($query->result_array() as $key) {
-				if($key["Total"] > 0){
 					$json["data"][$i]["Codigo"] = $key["Codigo"];
+					$json["data"][$i]["Descripcion"] = $key["Descripcion"];
 					$json["data"][$i]["ruta1"] = number_format($key["ruta1"],2);
 					$json["data"][$i]["ruta2"] = number_format($key["ruta2"],2);
 					$json["data"][$i]["ruta3"] = number_format($key["ruta3"],2);
@@ -342,9 +348,7 @@ class Reportes_model extends CI_Model
 					$json["data"][$i]["ruta28"] = number_format($key["ruta28"],2);
 					$json["data"][$i]["ruta30"] = number_format($key["ruta30"],2);
 					$json["data"][$i]["ruta31"] = number_format($key["ruta31"],2);
-					$json["data"][$i]["Total"] = number_format($key["Total"],2);
 					$i++;
-				}
 			}
 			if ($bandera) {
 				echo json_encode($json);
@@ -403,112 +407,19 @@ class Reportes_model extends CI_Model
 	public function reporteMermas($rango1,$rango2,$bandera){
 		$json = array();
 		$i = 0;
-		$query = $this->db->query("select codigo,Descripcion,SUM(Total) Total, NombreMes,
-		ISNULL(SUM([1]),0.000) '1',ISNULL(SUM([2]),0.0000) '2',ISNULL(SUM([3]),0.0000) '3',
-		ISNULL(SUM([4]),0.0000) '4',ISNULL(SUM([5]),0.0000) '5',ISNULL(SUM([6]),0.0000) '6',
-		ISNULL(SUM([7]),0.0000) '7',ISNULL(SUM([8]),0.0000) '8',ISNULL(SUM([9]),0.0000) '9',
-		ISNULL(SUM([10]) ,0.0000) '10',ISNULL(SUM([11]) ,0.0000) '11',ISNULL(SUM([12]) ,0.0000) '12',
-		ISNULL(SUM([13]) ,0.0000) '13',ISNULL(SUM([14]) ,0.0000) '14',ISNULL(SUM([15]) ,0.0000) '15',
-		ISNULL(SUM([16]) ,0.0000) '16',ISNULL(SUM([17]) ,0.0000) '17',ISNULL(SUM([18]) ,0.0000) '18',
-		ISNULL(SUM([19]) ,0.0000) '19',ISNULL(SUM([20]) ,0.0000) '20',ISNULL(SUM([21]) ,0.0000) '21',
-		ISNULL(SUM([22]) ,0.0000) '22',ISNULL(SUM([23]) ,0.0000) '23',ISNULL(SUM([24]) ,0.0000) '24',
-		ISNULL(SUM([25]) ,0.0000) '25',ISNULL(SUM([26]) ,0.0000) '26',ISNULL(SUM([27]) ,0.0000) '27',
-		ISNULL(SUM([28]) ,0.0000) '28',ISNULL(SUM([29]) ,0.0000) '29',ISNULL(SUM([30]) ,0.0000) '30',
-		ISNULL(SUM([31]) ,0.0000) '31'
-		from 
-		(select Codigo,Descripcion,NombreMes,SUM(TotalMerma) Total,
-		[1],[2],[3],[4],[5],[6],[7],
-		[8],[9],[10],[11],[12],[13],
-		[14],[15],[16],[17],[18],[19],
-		[20],[21],[22],[23],[24],[25],
-		[26],[27],[28],[29],[30],[31]
-		from 
-		(select t1.IdRuta,t2.IdPeriodo,CAST(t1.FechaFinal as date) FechaFinal,
-		MONTH (CAST(t1.FechaFinal as date)) Mes,
-		CASE MONTH (CAST(t1.FechaFinal as date))
-		WHEN 1 THEN 'Enero'
-		WHEN 2 THEN 'Febrero'
-		WHEN 3 THEN 'Marzo'
-		WHEN 4 THEN 'Abril'
-		WHEN 5 THEN 'Mayo'
-		WHEN 6 THEN 'Junio'
-		WHEN 7 THEN 'Julio'
-		WHEN 8 THEN 'Agosto'
-		WHEN 9 THEN 'Septiembre'
-		WHEN 10 THEN 'Octubre'
-		WHEN 11 THEN 'Noviembre'
-		WHEN 12 THEN 'Diciembre'
-		END AS NombreMes,
-		DAY(CAST(t1.FechaFinal as date)) Dia,
-		t3.Codigo,
-		t3.Descripcion,
-		ISNULL(t3.Merma,0) Merma,
-		ISNULL(SUM(t3.Merma),0) TotalMerma
-		from Periodos t1
-		right join Liquidacion t2 on t2.IdPeriodo = t1.IdPeriodo
-		inner join Liquidacion_Detalle t3 on t2.IdLiquidacion = t3.IdLiquidacion
-		where CAST(t1.FechaFinal as date) >= '".$rango1."' and CAST(t1.FechaFinal as date) <= '".$rango2."'
-		group by CAST(t1.FechaFinal as date),t1.IdRuta,t2.IdPeriodo,t3.Codigo,
-		t3.Descripcion,t3.Merma
-		) as tabla
-		PIVOT
-		(
-			SUM(Merma)
-			FOR [Dia] IN ([1],[2],[3],[4],[5],[6],[7],
-						  [8],[9],[10],[11],[12],[13],
-						  [14],[15],[16],[17],[18],[19],
-						  [20],[21],[22],[23],[24],[25],
-						  [26],[27],[28],[29],[30],[31]
-						  )
-		) as pvt
-		group by Codigo,Descripcion,NombreMes,
-		[1],[2],[3],[4],[5],[6],[7],
-		[8],[9],[10],[11],[12],[13],
-		[14],[15],[16],[17],[18],[19],
-		[20],[21],[22],[23],[24],[25],
-		[26],[27],[28],[29],[30],[31],
-		IdRuta) as tabla2
-		group by Codigo,Descripcion,NombreMes
-		order by Codigo
-		
-		");
+		$query = $this->db->query("SP_Mermas '".$rango1."','".$rango2."'");
+		$encabezado = $this->encabezadoMerma($rango1,$rango2,FALSE);
 		if ($query->num_rows() > 0) {
 			foreach ($query->result_array() as $key) {
-				$json["data"][$i]["codigo"] = $key["codigo"];
-				$json["data"][$i]["Descripcion"] = $key["Descripcion"];
-				$json["data"][$i]["Total"] = number_format($key["Total"],2);
-				$json["data"][$i]["NombreMes"] = $key["NombreMes"];
-				$json["data"][$i]["1"] = number_format($key["1"],2);
-				$json["data"][$i]["2"] = number_format($key["2"],2);
-				$json["data"][$i]["3"] = number_format($key["3"],2);
-				$json["data"][$i]["4"] = number_format($key["4"],2);
-				$json["data"][$i]["5"] = number_format($key["5"],2);
-				$json["data"][$i]["6"] = number_format($key["6"],2);
-				$json["data"][$i]["7"] = number_format($key["7"],2);
-				$json["data"][$i]["8"] = number_format($key["8"],2);
-				$json["data"][$i]["9"] = number_format($key["9"],2);
-				$json["data"][$i]["10"] = number_format($key["10"],2);
-				$json["data"][$i]["11"] = number_format($key["11"],2);
-				$json["data"][$i]["12"] = number_format($key["12"],2);
-				$json["data"][$i]["13"] = number_format($key["13"],2);
-				$json["data"][$i]["14"] = number_format($key["14"],2);
-				$json["data"][$i]["15"] = number_format($key["15"],2);
-				$json["data"][$i]["16"] = number_format($key["16"],2);
-				$json["data"][$i]["17"] = number_format($key["17"],2);
-				$json["data"][$i]["18"] = number_format($key["18"],2);
-				$json["data"][$i]["19"] = number_format($key["19"],2);
-				$json["data"][$i]["20"] = number_format($key["20"],2);
-				$json["data"][$i]["21"] = number_format($key["21"],2);
-				$json["data"][$i]["22"] = number_format($key["22"],2);
-				$json["data"][$i]["23"] = number_format($key["23"],2);
-				$json["data"][$i]["24"] = number_format($key["24"],2);
-				$json["data"][$i]["25"] = number_format($key["25"],2);
-				$json["data"][$i]["26"] = number_format($key["26"],2);
-				$json["data"][$i]["27"] = number_format($key["27"],2);
-				$json["data"][$i]["28"] = number_format($key["28"],2);
-				$json["data"][$i]["29"] = number_format($key["29"],2);
-				$json["data"][$i]["30"] = number_format($key["30"],2);
-				$json["data"][$i]["31"] = number_format($key["31"],2);
+				$json[$i]["codigo"] = $key["Codigo"];
+				$json[$i]["Descripcion"] = $key["Descripcion"];
+				$json[$i]["Total"] = number_format($key["Total"],2);
+				$json[$i]["NombreMes"] = $key["NombreMes"];
+				foreach ($encabezado as $key1) {
+					for($var = 1; $var <= count($key1); $var++){
+						$json[$i]["DIA".$key1["Dias"].""] = number_format($key["DIA".$key1["Dias"].""],2);
+					}
+				}
 				$i++;
 			}
 			if($bandera){
@@ -519,6 +430,134 @@ class Reportes_model extends CI_Model
 		}
 		return 0;
 	}
+
+	public function encabezadoMerma($rango1,$rango2,$bandera){
+		$json = array();
+		$i = 0;
+		$query = $this->db->query("DECLARE @FechaDesde date = '".$rango1."', @FechaHasta date = '".$rango2."';
+		WITH DateSequence(Fecha) AS
+		(   SELECT @FechaDesde as Fecha
+			UNION ALL 
+			SELECT DATEADD(DAY, 1, Fecha)
+			FROM DateSequence
+			WHERE Fecha < @FechaHasta
+		)
+	
+		--select final para obtener la secuencia
+		SELECT DATEPART(DAY,Fecha)  AS Dias
+		FROM DateSequence where DATEPART(dw,Fecha) <> 1 
+		OPTION (MAXRECURSION 3000)
+		");
+		if($query->num_rows()>0){
+			foreach ($query->result_array() as $key) {
+				for($var = 1; $var <= count($key); $var ++){
+					$json[$i]["Dias"] = $key["Dias"];
+				}
+				$i++;
+			}
+			if($bandera){
+				echo json_encode($json);	
+				return;
+			}
+			return $query->result_array();
+		}
+		return 0;
+	}
+
+
+	public function encabezadoMerma2($rango1,$rango2,$bandera){
+		$json = array();
+		$i = 0;
+		$query = $this->db->query("DECLARE @FechaDesde date = '".$rango1."', @FechaHasta date = '".$rango2."';
+		WITH DateSequence(Fecha) AS
+		(   SELECT @FechaDesde as Fecha
+			UNION ALL 
+			SELECT DATEADD(DAY, 1, Fecha)
+			FROM DateSequence
+			WHERE Fecha < @FechaHasta
+		)
+	
+		--select final para obtener la secuencia
+		SELECT 'DIA'+CAST(DATEPART(DAY,Fecha) AS VARCHAR) as Dias
+		FROM DateSequence where DATEPART(dw,Fecha) <> 1 
+		OPTION (MAXRECURSION 3000)
+		");
+		if($query->num_rows()>0){
+			foreach ($query->result_array() as $key) {
+				for($var = 1; $var <= count($key); $var ++){
+					$json[$i]["Dias"] = $key["Dias"];
+				}
+				$i++;
+			}
+			if($bandera){
+				echo json_encode($json);	
+				return;
+			}
+			return $query->result_array();
+		}
+		return 0;
+	}
+
+	public function mostrarVendForaneos(){
+		$query = $this->db->query("SELECT t1.ID,t1.DESCRIPCION,t2.IdRuta,t2.Ruta
+														FROM CategoriasRutas t1
+													inner join Usuarios t2 on t1.ID = t2.IdCatRuta
+													where t1.ID = 4");
+		if($query->num_rows()  >0){
+			return $query->result_array();
+		}
+		return 0;
+	}
+
+	public function reporteDeVentasDeposito($fechaInicio,$fechaFin,$ruta,$bandera){
+		$json = array(); $i = 0; $queryRuta = '';
+		if($ruta){
+			$queryRuta = "AND T0.CODVENDEDOR = '".$ruta."' ";
+		}else if($ruta == 0){
+			$queryRuta = "AND T0.CODVENDEDOR in ( SELECT t2.IdRuta
+			FROM CategoriasRutas t1
+			inner join Usuarios t2 on t1.ID = t2.IdCatRuta
+			where t1.ID = 4) ";
+		}else{
+			$queryRuta = "AND T0.CODVENDEDOR in ( SELECT t2.IdRuta
+			FROM CategoriasRutas t1
+			inner join Usuarios t2 on t1.ID = t2.IdCatRuta
+			where t1.ID = 4) ";
+		}
+
+		$query = $this->db->query("SELECT T2.IdCatRuta,T3.DESCRIPCION, T0.CODVENDEDOR, T2.Ruta,  
+			SUM(CASE WHEN T0.CODCONDPAGO = '-1' THEN 1 ELSE 0 END) NOFACTURASCONTADO,
+			SUM(CASE WHEN T0.CODCONDPAGO = '-1' THEN T0.TOTAL ELSE 0 END) TOTALCONTADO,
+			SUM(CASE WHEN T0.CODCONDPAGO <> '-1' THEN 1 ELSE 0 END) NOFACTURASCREDITO,
+			SUM(CASE WHEN T0.CODCONDPAGO <> '-1' THEN T0.TOTAL ELSE 0 END) TOTALCREDITO
+			FROM Facturas T0
+			INNER JOIN Usuarios T2 ON T2.IdRuta = T0.CODVENDEDOR
+			INNER JOIN CategoriasRutas T3 ON T3.ID = T2.IdCatRuta
+			WHERE CAST(T0.FECHA AS DATE) >='".$fechaInicio."' AND CAST(T0.FECHA AS DATE) <= '".$fechaFin."' ".$queryRuta."
+			AND T0.ESTADOAPP <> 4  
+			GROUP BY  T2.IdCatRuta,T3.DESCRIPCION,T0.CODVENDEDOR, T2.Ruta
+			ORDER BY T0.CODVENDEDOR
+			");
+		 
+		 if($query->num_rows() > 0){
+			foreach ($query->result_array() as $key) {
+				$json["data"][$i]["CODVENDEDOR"] = $key["CODVENDEDOR"];
+				$json["data"][$i]["RUTA"] = $key["Ruta"];
+				$json["data"][$i]["NOFACTURASCONTADO"] = $key["NOFACTURASCONTADO"];
+				$json["data"][$i]["TOTALCONTADO"] = number_format($key["TOTALCONTADO"],2);
+				$json["data"][$i]["NOFACTURASCREDITO"] = $key["NOFACTURASCREDITO"];
+				$json["data"][$i]["TOTALCREDITO"] = number_format($key["TOTALCREDITO"],2);
+				$i++;
+			}
+
+			if ($bandera) {
+				echo json_encode($json);
+				return;
+			}
+			return $query->result_array();
+		 }
+		 return 0;
+	}	
 } 
 
 /* End of file Reportes_model.php */

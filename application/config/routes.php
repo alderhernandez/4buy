@@ -68,6 +68,7 @@ $route["inventarioRutasSinStock"] = "Remisiones_controller/inventarioRutasSinSto
 
 $route["Remisiones"] = "Remisiones_controller/remisiones";
 $route["ProductosList"] = "Remisiones_controller/getProductosRutas";
+$route["ProductosListMerma"] = "Remisiones_controller/getProductosMermas";
 
 $route["SaveRemision"] = "Remisiones_controller/guardarRemision";
 $route["GetVendedorAjax/(:any)"] = "Remisiones_controller/getVendedorAjax/$1";   /*Cargar vendedor en campo de texto al seleccionar una ruta*/
@@ -173,10 +174,13 @@ $route["ExcelLiqUnid/(:any)"] = "Liquidacion_controller/exportarExcelLiquidacion
 $route["createXLS/(:any)/(:any)"] = "Reportes_controller/createXLS/$1/$2";
 $route["createXLSDetallado/(:any)/(:any)"] = "Reportes_controller/createXLSDetallado/$1/$2";
 $route["Reporte_Merma"] = "Reportes_controller/viewReporteMerma";
+$route["encabezadoMerma"] = "Reportes_controller/encabezadoMerma";
 $route["ReporteMerma"] = "Reportes_controller/reporteMermas";
 $route["printReporteMermas/(:any)/(:any)"] = "Reportes_controller/printReporteMermas/$1/$2";
-
-//grafias
+$route["VentasDepositos"] = "Reportes_controller/viewReporteVentasDeposito";
+$route["reporteDeVentasDeposito"] = "Reportes_controller/reporteDeVentasDeposito";
+$route["printVentasDep/(:any)/(:any)/(:any)"] = "Reportes_controller/printReporteDeVentasDeposito/$1/$2/$3";
+//graficas
 
 $route["grafica/(:any)/(:any)/(:any)/(:any)"] = "Cuotas_controller/grafica/$1/$2/$3/$4";
 $route["librasXdia"] = "Cuotas_controller/librasXdia";
