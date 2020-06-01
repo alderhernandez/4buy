@@ -277,6 +277,24 @@ class Reportes_controller extends CI_Controller {
 			$this->load->view('Exportar/Exportar_ventasDeposito',$data);	
 		}
 		//end region
+
+		public function VerificarNotificacionAntiguedad()
+		{
+			//poner permiso
+			$this->Hana_model->VerificarNotificacionAntiguedad();
+		}
+
+		public function pagoProveedores()
+		{
+			$data["pagos"] = $this->Hana_model->getPagosProveedores();
+			echo json_encode($data);
+			//$this->load->view('header/header');
+			//$this->load->view('header/menu');
+			//$this->load->view('proveedores/proveedores',$data);
+			//$this->load->view('footer/footer');
+			//$this->load->view('jsView/reportes/jsreporte_merma');
+
+		}
 }
 
 /* End of file Controllername.php */

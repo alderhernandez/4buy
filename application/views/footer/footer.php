@@ -118,7 +118,21 @@
 
 	  $("#notBell").click(function () {
 		  $("#notificaciones").html("")
-	  });
+	  });    
+    
+    $.ajax({
+          url: "<?php echo base_url("index.php/VerificarNotificacionAntiguedad")?>",
+          type: "POST",
+          async: true,
+            success: function (data) {                            
+                console.log(data);
+                if (data == '-1') {
+                    $('#avisoProveedores').modal('show');
+                }
+                
+            }
+      });
+    
   });
 
    /* $(".my_select_box").chosen({

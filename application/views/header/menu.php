@@ -446,6 +446,19 @@
 									</li>
 								</ul>
 							</li>
+							<li class="nav-parent">
+								<a>
+									<i class="fa fa-flag-checkered" aria-hidden="true"></i>
+									<span>Pago proveedores</span>
+								</a>
+								<ul class="nav nav-children">
+									<li>
+										<a href="<?php echo base_url("index.php/pagoProveedores")?>">
+											Pagos proximos
+										</a>
+									</li>									
+								</ul>
+							</li>
 
 							<br>
 							<li>
@@ -482,3 +495,22 @@
 				</div>
 			</header>
 
+<!-- Modal -->
+<div class="modal fade" id="avisoProveedores" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Aviso</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <h4 class="text-danger font-weight-bolder">Hola tienes pagos pendientes a proveedores</h4>
+        <div class="row text-center">
+        	<a class="btn btn-primary" href="<?php echo base_url("index.php/pagoProveedores")?>">Ver</a>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>

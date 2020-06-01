@@ -71,7 +71,9 @@
 			    margin: 1.75rem auto;
 			}
 		</style>
+		
 	</head>
 	<body onload="setTimeout(function() {
 	  showNotifications();
 	},3000);">
+

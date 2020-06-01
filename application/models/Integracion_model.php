@@ -20,6 +20,13 @@ class Integracion_model extends CI_Model {
 	public function getFacturasPendientes($ruta, $fechaInicio, $fechaFin){
 		$json = array();
 		$i = 0;
+
+		echo "SELECT
+								  t1.*
+								  FROM [4BUY].[dbo].[cm_encabezado_facturas] t1
+								  inner join Periodos t2 on t1.IDPERIODO = t2.IdPeriodo
+								  where t1.CODVENDEDOR = '".$ruta."' and CAST(t1.FECHA AS DATE) BETWEEN '".$fechaInicio."' 
+								  AND '".$fechaFin."' AND t1.ESTADOAPP = '1' and  t2.Liquidado = 'Y'";
 		$query = $this->db->query("SELECT
 								  t1.*
 								  FROM [4BUY].[dbo].[cm_encabezado_facturas] t1

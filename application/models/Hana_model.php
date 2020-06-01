@@ -708,5 +708,62 @@ class Hana_model extends CI_Model
         }
   }
 
+  public function VerificarNotificacionAntiguedad()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+
+      $query = 'SELECT *
+            FROM '.$this->BD.'.ANTIGUEDAD_PROVEEDORES t0            
+            WHERE t0."1-30"  > 0';
+            //echo $query;
+      $resultado =  @odbc_exec($conn,$query);
+
+      $numero = @odbc_num_rows($resultado);
+
+      echo $numero;
+  }
+  
+  public function getPagosProveedores()
+  {
+    $conn = $this->OPen_database_odbcSAp();
+    $json = array();
+    $i=0;
+      $query = 'SELECT "DocNum" FROM '.$this->BD.'.ANTIGUEDAD_PROVEEDORES t0 WHERE t0."1-30"  > 0';
+      echo $query;
+      $resultado =  @odbc_exec($conn,$query);
+
+      //print_r($resultado);
+
+        while ($fila = @odbc_fetch_array($resultado)){
+          echo $fila["DocNum"];
+          $json[$i]["DocNum"] = $fila["DocNum"];
+          $json[$i]["NumAtCard"] = $fila["NumAtCard"];
+          $json[$i]["CardCode"] = $fila["CardCode"];
+          $json[$i]["CardName"] = $fila["CardName"];
+          $json[$i]["LicTradNum"] = $fila["LicTradNum"];
+          $json[$i]["DocStatus"] = $fila["DocStatus"];
+          $json[$i]["ImpRetencion"] = $fila["ImpRetencion"];
+          $json[$i]["TIPO"] = $fila["TIPO"];
+          $json[$i]["VatSum"] = $fila["VatSum"];
+          $json[$i]["DocTotal"] = $fila["DocTotal"];
+          $json[$i]["Comments"] = $fila["Comments"];
+          $json[$i]["Fecha_Factura"] = $fila["Fecha_Factura"];
+          $json[$i]["Vencimiento"] = $fila["Vencimiento"];
+          $json[$i]["Dias"] = $fila["Dias"];
+          $json[$i]["Corriente"] = $fila["Corriente"];
+          $json[$i]["1-30"] = $fila["1-30"];
+          $json[$i]["31-60"] = $fila["31-60"];
+          $json[$i]["61-90"] = $fila["61-90"];
+          $json[$i]["91-120"] = $fila["91-120"];
+          $json[$i]["121-+"] = $fila["121-+"];
+          $json[$i]["CheckNum"] = $fila["CheckNum"];
+          $json[$i]["BankCode"] = $fila["BankCode"];
+          $json[$i]["AcctNum"] = $fila["AcctNum"];
+          $json[$i]["TASA"] = $fila["TASA"];
+          $i++;
+        }
+      return $json;
+  }
+
 }
 ?>
